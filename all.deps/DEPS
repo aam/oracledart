@@ -1,19 +1,18 @@
 vars = {
-  # Use this googlecode_url variable only if there is an internal mirror for it.
-  # If you do not know, use the full path while defining your new deps entry.
   "googlecode_url": "http://%s.googlecode.com/svn",
+  "gyp_rev": "@1752",
 }
-
+ 
 deps = {
-  "dart": "/branches/bleeding_edge/dart"
-  # Stuff needed for GYP to run.
-  "dart/third_party/gyp":
+  "oracledart":
+    "/trunk/oracledart",
+  "oracledart/third_party/gyp":
       (Var("googlecode_url") % "gyp") + "/trunk" + Var("gyp_rev"),
 }
 
 hooks = [
   {
     "pattern": ".",
-    "action": ["python", "dart/tools/gyp_dart.py"],
+    "action": ["python", "oracledart/third_party/gyp/gyp_main.py", "--depth=dart", "-Idart/tools/gyp/all.gypi", "oracledart/oracledart.gyp"],
   },
 ]
