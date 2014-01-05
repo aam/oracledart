@@ -8,7 +8,7 @@
   ],
   'targets': [
     {
-      'target_name': 'oradart',
+      'target_name': 'oracledart',
       'type': 'shared_library',
       'dependencies': [
         '../dart/runtime/dart-runtime.gyp:dart',
