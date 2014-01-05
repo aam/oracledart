@@ -17,20 +17,4 @@ void main() {
     var connect_id = connect("scott", "tiger", "");
     print("Connect id $connect_id");
   }
-
-  systemSrand(17);
-  var x1 = systemRand();
-  var x2 = systemRand();
-  var x3 = systemRand();
-  check(x1 != x2, "x1 != x2");
-  check(x1 != x3, "x1 != x3");
-  check(x2 != x3, "x2 != x3");
-  systemSrand(17);
-  check(x1 == systemRand(), "x1 == systemRand()");
-  check(x2 == systemRand(), "x2 == systemRand()");
-  check(x3 == systemRand(), "x3 == systemRand()");
-  systemSrand(18);
-  check(x1 != systemRand(), "x1 != systemRand()");
-  check(x2 != systemRand(), "x2 != systemRand()");
-  check(x3 != systemRand(), "x3 != systemRand()");
 }

@@ -14,7 +14,7 @@
         '../dart/runtime/dart-runtime.gyp:dart',
       ],
       'include_dirs': [
-        '$(ORACLE_HOME)/oci/include',
+        '$(ORACLE_HOME)/include',
         '../dart/runtime'
       ],
       'sources': [
@@ -29,7 +29,7 @@
           'msvs_settings': {
             'VCLinkerTool': {
               'AdditionalDependencies': [ 'dart.lib', 'oci.lib', 'oraocci11.lib' ],
-              'AdditionalLibraryDirectories': [ '<(PRODUCT_DIR)', '$(ORACLE_HOME)/oci/lib/msvc' ],
+              'AdditionalLibraryDirectories': [ '<(PRODUCT_DIR)', '$(ORACLE_HOME)/lib/msvc' ],
             },
           },
         }],
