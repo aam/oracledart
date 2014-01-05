@@ -18,8 +18,8 @@
         '../dart/runtime'
       ],
       'sources': [
-        'sample_extension.cc',
-        'sample_extension_dllmain_win.cc',
+        'oracledart_extension.cc',
+        'oracledart_extension_dllmain_win.cc',
       ],
       'defines': [
         'DART_SHARED_LIB',
