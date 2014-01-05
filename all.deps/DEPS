@@ -5,7 +5,7 @@ vars = {
  
 deps = {
   "oracledart":
-    "/trunk/oracledart",
+    "/oracledart/trunk/oracledart",
   "oracledart/third_party/gyp":
       (Var("googlecode_url") % "gyp") + "/trunk" + Var("gyp_rev"),
 }
