@@ -4,6 +4,6 @@
 
 library oracledart_synchronous_extension;
 
-import 'dart-ext:oracledart';
+import 'dart-ext:oracledart_extension';
 
 int connect(string username, string password, string db) native "Connect";
