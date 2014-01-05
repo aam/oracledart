@@ -1,18 +1,11 @@
-vars = {
-  "googlecode_url": "http://%s.googlecode.com/svn",
-  "gyp_rev": "@1752",
-}
- 
 deps = {
   "oracledart":
     "/oracledart/trunk/oracledart",
-  "oracledart/third_party/gyp":
-      (Var("googlecode_url") % "gyp") + "/trunk" + Var("gyp_rev"),
 }
 
 hooks = [
   {
     "pattern": ".",
-    "action": ["python", "oracledart/third_party/gyp/gyp_main.py", "--depth=dart", "-Idart/tools/gyp/all.gypi", "oracledart/oracledart.gyp"],
+    "action": ["python", "dart/third_party/gyp/gyp_main.py", "--depth=dart", "-Idart/tools/gyp/all.gypi", "oracledart/oracledart.gyp"],
   },
 ]
