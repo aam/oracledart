@@ -28,8 +28,8 @@
         ['OS=="win"', {
           'msvs_settings': {
             'VCLinkerTool': {
-              'AdditionalDependencies': [ 'dart.lib', 'oci.lib', 'oraocci11.lib' ],
-              'AdditionalLibraryDirectories': [ '<(PRODUCT_DIR)', '$(ORACLE_OCI_HOME)/lib/msvc' ],
+              'AdditionalDependencies': [ 'dart.lib', 'oci.lib', 'oraocci12.lib' ],
+              'AdditionalLibraryDirectories': [ '<(PRODUCT_DIR)', '$(ORACLE_OCI_HOME)/lib/msvc/vc11', '$(ORACLE_OCI_HOME)/lib/msvc' ],
             },
           },
         }],

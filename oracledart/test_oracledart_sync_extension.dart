@@ -14,7 +14,7 @@ void check(bool condition, String message) {
 
 void main() {
   for (var i = 0; i < 10; i++) {
-    var connect_id = connect("scott", "tiger", "");
+    var connect_id = connect("scott", "tiger", "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=w8-32-12core)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XE)(SERVER=DEDICATED)))");
     print("Connect id $connect_id");
   }
 }

@@ -33,8 +33,9 @@ struct Connection {
   oracle::occi::Connection *conn;
 
   Connection(std::string user, std::string password, std::string db) {
-    env = oracle::occi::Environment::createEnvironment (oracle::occi::Environment::DEFAULT);
-    conn = env->createConnection (user, password, db);
+    env = oracle::occi::Environment::createEnvironment(oracle::occi::Environment::DEFAULT);
+    conn = env->createConnection(user, password, db);
+//      conn = env->createConnection ("scott", "tiger", "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=w8-32-12core)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XE)(SERVER=DEDICATED)))");
   }
 };
 
