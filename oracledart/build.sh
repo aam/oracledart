@@ -1,0 +1,1 @@
+ORACLE_OCI_HOME=~/Downloads/instantclient-sdk-macos.x32-11.2.0.3.0/sdk ORACLE_OCCI_LIB_HOME=~/Downloads/instantclient_11_2-2 xcodebuild -project oracledart.xcodeproj -configuration ReleaseIA32 SYMROOT=`pwd`/../dart/xcodebuild

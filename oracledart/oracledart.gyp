@@ -35,7 +35,7 @@
         }],
         ['OS=="mac"', {
           'xcode_settings': {
-            'OTHER_LDFLAGS': [ '-undefined', 'dynamic_lookup' ],
+            'OTHER_LDFLAGS': [ '-undefined', 'dynamic_lookup', '-locci', '-lclntsh', '-L$(ORACLE_OCCI_LIB_HOME)' ],
           },
         }],
         ['OS=="linux"', {
