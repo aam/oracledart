@@ -5,5 +5,13 @@
 library oracledart_synchronous_extension;
 
 import 'dart-ext:oracledart_extension';
+import 'dart:nativewrappers';
 
-int connect(string username, string password, string db) native "Connect";
+class OracleConnection extends NativeFieldWrapperClass1 {
+}
+
+
+int connect(OracleConnection connection,
+            string username, string password, string db) native "Connect";
+int select(OracleConnection connection,
+           string query) native "Select";

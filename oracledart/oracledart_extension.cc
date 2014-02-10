@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
 
 #include <occi.h>
 
@@ -28,38 +29,90 @@ Dart_Handle HandleError(Dart_Handle handle) {
   return handle;
 }
 
-struct Connection {
+struct OracleConnection {
   oracle::occi::Environment *env;
   oracle::occi::Connection *conn;
 
-  Connection(std::string user, std::string password, std::string db) {
+  OracleConnection(std::string user, std::string password, std::string db) {
     env = oracle::occi::Environment::createEnvironment(oracle::occi::Environment::DEFAULT);
     conn = env->createConnection(user, password, db);
 //      conn = env->createConnection ("scott", "tiger", "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=w8-32-12core)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XE)(SERVER=DEDICATED)))");
   }
+
+  void Terminate() {
+    env->terminateConnection(conn);
+    oracle::occi::Environment::terminateEnvironment(env);
+    std::cout << "Closed connection" << std::endl;
+  }
 };
 
-std::list<Connection*> connections;
+static void OracleConnectionFinalizer(Dart_WeakPersistentHandle handle,
+  void* pvoid_oracle_connection) {
+  Dart_DeleteWeakPersistentHandle(handle);
+  OracleConnection* oracle_connection = 
+    static_cast<OracleConnection*>(pvoid_oracle_connection);
+  oracle_connection->Terminate();
+}
 
 void Connect(Dart_NativeArguments arguments) {
   Dart_EnterScope();
 
-  Dart_Handle username_object = HandleError(Dart_GetNativeArgument(arguments, 0));
+  Dart_Handle connection_obj = Dart_GetNativeArgument(arguments, 0);
+
+  Dart_Handle username_object = HandleError(Dart_GetNativeArgument(arguments, 1));
   const char* username;
   HandleError(Dart_StringToCString(username_object, &username));
-  Dart_Handle password_object = HandleError(Dart_GetNativeArgument(arguments, 1));
+  Dart_Handle password_object = HandleError(Dart_GetNativeArgument(arguments, 2));
   const char* password;
   HandleError(Dart_StringToCString(password_object, &password));
-  Dart_Handle db_object = HandleError(Dart_GetNativeArgument(arguments, 2));
+  Dart_Handle db_object = HandleError(Dart_GetNativeArgument(arguments, 3));
   const char* db;
   HandleError(Dart_StringToCString(db_object, &db));
 
-  connections.push_back(new Connection(username, password, db));
-  Dart_Handle result = HandleError(Dart_NewInteger(connections.size()));
+  OracleConnection* connection = new OracleConnection(username, password, db);
+  HandleError(Dart_SetNativeInstanceField(
+      connection_obj,
+      0,
+      reinterpret_cast<intptr_t>(connection)));
 
+  Dart_NewWeakPersistentHandle(
+      connection_obj,
+      connection,
+      OracleConnectionFinalizer);
+
+  Dart_Handle result = HandleError(Dart_NewInteger(0));
   Dart_SetReturnValue(arguments, result);
   Dart_ExitScope();
-}  
+}
+
+void Select(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+
+  Dart_Handle connection_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  OracleConnection* connection;
+  HandleError(Dart_GetNativeInstanceField(
+      connection_obj,
+      0,
+      reinterpret_cast<intptr_t*>(&connection)));
+  
+  Dart_Handle query_object = HandleError(Dart_GetNativeArgument(arguments, 1));
+  const char* query;
+  HandleError(Dart_StringToCString(query_object, &query));
+
+  oracle::occi::Statement* stmt = connection->conn->createStatement (query);
+  oracle::occi::ResultSet *rset = stmt->executeQuery();
+  while (rset->next ()) {
+    std::cout << "author_id: " << rset->getInt (1) << "  author_name: " 
+              << rset->getString (2) << std::endl;
+  }
+
+  stmt->closeResultSet (rset);
+  connection->conn->terminateStatement (stmt);
+
+  Dart_Handle result = HandleError(Dart_NewInteger(0));
+  Dart_SetReturnValue(arguments, result);
+  Dart_ExitScope();
+}
 
 struct FunctionLookup {
   const char* name;
@@ -68,6 +121,7 @@ struct FunctionLookup {
 
 FunctionLookup function_list[] = {
     {"Connect", Connect},
+    {"Select", Select},
     {NULL, NULL}};
 
 Dart_NativeFunction ResolveName(Dart_Handle name,

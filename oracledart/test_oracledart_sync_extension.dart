@@ -14,7 +14,9 @@ void check(bool condition, String message) {
 
 void main() {
   for (var i = 0; i < 10; i++) {
-    var connect_id = connect("scott", "tiger", "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=w8-32-12core)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XE)(SERVER=DEDICATED)))");
-    print("Connect id $connect_id");
+    OracleConnection connection = new OracleConnection();
+
+    connect(connection, "system", "oracle", "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=orcl)(SERVER=DEDICATED)))");
+    select(connection, "select employee_id, last_name from hr.employees");
   }
 }
