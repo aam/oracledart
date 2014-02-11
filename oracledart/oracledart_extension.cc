@@ -43,15 +43,45 @@ struct OracleConnection {
     env->terminateConnection(conn);
     oracle::occi::Environment::terminateEnvironment(env);
     std::cout << "Closed connection" << std::endl;
+    conn = NULL;
+    env = NULL;
+  }
+};
+
+struct OracleResultset {
+  OracleConnection *connection;
+  oracle::occi::Statement *statement;
+  oracle::occi::ResultSet *resultset;
+
+  OracleResultset(OracleConnection *connection,
+                  oracle::occi::Statement *statement,
+                  oracle::occi::ResultSet *resultset):
+      connection(connection),
+      statement(statement),
+      resultset(resultset) {}
+
+  void Close() {
+    if (connection->conn != NULL) {
+      statement->closeResultSet(resultset);
+      connection->conn->terminateStatement(statement);
+    }
   }
 };
 
 static void OracleConnectionFinalizer(Dart_WeakPersistentHandle handle,
-  void* pvoid_oracle_connection) {
+                                      void* pvoid_oracle_connection) {
   Dart_DeleteWeakPersistentHandle(handle);
   OracleConnection* oracle_connection = 
     static_cast<OracleConnection*>(pvoid_oracle_connection);
   oracle_connection->Terminate();
+}
+
+static void OracleResultsetFinalizer(Dart_WeakPersistentHandle handle,
+                                     void* pvoid_oracle_resultset) {
+  Dart_DeleteWeakPersistentHandle(handle);
+  OracleResultset* oracle_resultset = 
+    static_cast<OracleResultset*>(pvoid_oracle_resultset);
+  oracle_resultset->Close();
 }
 
 void Connect(Dart_NativeArguments arguments) {
@@ -94,13 +124,52 @@ void Select(Dart_NativeArguments arguments) {
       connection_obj,
       0,
       reinterpret_cast<intptr_t*>(&connection)));
-  
-  Dart_Handle query_object = HandleError(Dart_GetNativeArgument(arguments, 1));
-  const char* query;
-  HandleError(Dart_StringToCString(query_object, &query));
+ 
+  Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 1));
 
-  oracle::occi::Statement* stmt = connection->conn->createStatement (query);
+  Dart_Handle query_obj = HandleError(Dart_GetNativeArgument(arguments, 2));
+  const char* query;
+  HandleError(Dart_StringToCString(query_obj, &query));
+
+  oracle::occi::Statement* stmt = connection->conn->createStatement(query);
   oracle::occi::ResultSet *rset = stmt->executeQuery();
+  OracleResultset* resultset = new OracleResultset(connection, stmt, rset);
+  HandleError(Dart_SetNativeInstanceField(
+      resultset_obj,
+      0,
+      reinterpret_cast<intptr_t>(resultset)));
+
+  Dart_NewWeakPersistentHandle(
+      resultset_obj,
+      resultset,
+      OracleResultsetFinalizer);
+
+  Dart_Handle result = HandleError(Dart_NewInteger(0));
+  Dart_SetReturnValue(arguments, result);
+  Dart_ExitScope();
+}
+
+void OracleResultset_GetData(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+
+  Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  OracleResultset* resultset;
+  HandleError(Dart_GetNativeInstanceField(
+    resultset_obj,
+    0,
+    reinterpret_cast<intptr_t*>(&resultset)));
+
+  while (resultset->resultset->next ()) {
+    std::cout << "author_id: " << resultset->resultset->getInt (1) << "  author_name: " 
+              << resultset->resultset->getString (2) << std::endl;
+  }
+
+  Dart_Handle result = HandleError(Dart_NewInteger(0));
+  Dart_SetReturnValue(arguments, result);
+  Dart_ExitScope();
+}
+
+/* 
   while (rset->next ()) {
     std::cout << "author_id: " << rset->getInt (1) << "  author_name: " 
               << rset->getString (2) << std::endl;
@@ -108,11 +177,7 @@ void Select(Dart_NativeArguments arguments) {
 
   stmt->closeResultSet (rset);
   connection->conn->terminateStatement (stmt);
-
-  Dart_Handle result = HandleError(Dart_NewInteger(0));
-  Dart_SetReturnValue(arguments, result);
-  Dart_ExitScope();
-}
+*/
 
 struct FunctionLookup {
   const char* name;
@@ -122,6 +187,7 @@ struct FunctionLookup {
 FunctionLookup function_list[] = {
     {"Connect", Connect},
     {"Select", Select},
+    {"OracleResultset_GetData", OracleResultset_GetData},
     {NULL, NULL}};
 
 Dart_NativeFunction ResolveName(Dart_Handle name,

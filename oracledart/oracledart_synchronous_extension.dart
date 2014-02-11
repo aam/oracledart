@@ -10,8 +10,14 @@ import 'dart:nativewrappers';
 class OracleConnection extends NativeFieldWrapperClass1 {
 }
 
+class OracleResultset extends NativeFieldWrapperClass1 {
+    int getData() native "OracleResultset_GetData";
+}
 
 int connect(OracleConnection connection,
-            string username, string password, string db) native "Connect";
+            string username,
+            string password,
+            string db) native "Connect";
 int select(OracleConnection connection,
+           OracleResultset resultset,
            string query) native "Select";

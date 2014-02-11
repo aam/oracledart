@@ -15,8 +15,11 @@ void check(bool condition, String message) {
 void main() {
   for (var i = 0; i < 10; i++) {
     OracleConnection connection = new OracleConnection();
-
     connect(connection, "system", "oracle", "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=orcl)(SERVER=DEDICATED)))");
-    select(connection, "select employee_id, last_name from hr.employees");
+
+    OracleResultset resultset = new OracleResultset();    
+    select(connection, resultset, "select employee_id, last_name from hr.employees");
+
+    resultset.getData();
   }
 }
