@@ -20,6 +20,8 @@ void main() {
     OracleResultset resultset = new OracleResultset();    
     select(connection, resultset, "select employee_id, last_name from hr.employees");
 
-    resultset.getData();
+    while (resultset.next()) {
+        print("${resultset.getInt(1)} ${resultset.getString(2)}");
+    }
   }
 }

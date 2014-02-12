@@ -169,15 +169,60 @@ void OracleResultset_GetData(Dart_NativeArguments arguments) {
   Dart_ExitScope();
 }
 
-/* 
-  while (rset->next ()) {
-    std::cout << "author_id: " << rset->getInt (1) << "  author_name: " 
-              << rset->getString (2) << std::endl;
-  }
+void OracleResultset_Next(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
 
-  stmt->closeResultSet (rset);
-  connection->conn->terminateStatement (stmt);
-*/
+  Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  OracleResultset* resultset;
+  HandleError(Dart_GetNativeInstanceField(
+    resultset_obj,
+    0,
+    reinterpret_cast<intptr_t*>(&resultset)));
+
+  Dart_Handle result = HandleError(Dart_NewBoolean(resultset->resultset->next()));
+  Dart_SetReturnValue(arguments, result);
+  Dart_ExitScope();
+}
+
+void OracleResultset_GetInt(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+
+  Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  OracleResultset* resultset;
+  HandleError(Dart_GetNativeInstanceField(
+    resultset_obj,
+    0,
+    reinterpret_cast<intptr_t*>(&resultset)));
+
+  Dart_Handle index_obj = HandleError(Dart_GetNativeArgument(arguments, 1));
+  int64_t index;
+  HandleError(Dart_IntegerToInt64(index_obj, &index));
+
+  Dart_Handle result = HandleError(Dart_NewInteger(resultset->resultset->getInt(index)));
+  Dart_SetReturnValue(arguments, result);
+  Dart_ExitScope();
+}
+
+void OracleResultset_GetString(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+
+  Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  OracleResultset* resultset;
+  HandleError(Dart_GetNativeInstanceField(
+    resultset_obj,
+    0,
+    reinterpret_cast<intptr_t*>(&resultset)));
+
+  Dart_Handle index_obj = HandleError(Dart_GetNativeArgument(arguments, 1));
+  int64_t index;
+  HandleError(Dart_IntegerToInt64(index_obj, &index));
+
+  std::string s = resultset->resultset->getString(index);
+  Dart_Handle result = Dart_NewStringFromCString(s.c_str());
+
+  Dart_SetReturnValue(arguments, result);
+  Dart_ExitScope();
+}
 
 struct FunctionLookup {
   const char* name;
@@ -187,7 +232,9 @@ struct FunctionLookup {
 FunctionLookup function_list[] = {
     {"Connect", Connect},
     {"Select", Select},
-    {"OracleResultset_GetData", OracleResultset_GetData},
+    {"OracleResultset_GetString", OracleResultset_GetString},
+    {"OracleResultset_GetInt", OracleResultset_GetInt},
+    {"OracleResultset_Next", OracleResultset_Next},
     {NULL, NULL}};
 
 Dart_NativeFunction ResolveName(Dart_Handle name,

@@ -11,7 +11,10 @@ class OracleConnection extends NativeFieldWrapperClass1 {
 }
 
 class OracleResultset extends NativeFieldWrapperClass1 {
-    int getData() native "OracleResultset_GetData";
+    int getInt(int index) native "OracleResultset_GetInt";
+    String getString(int index) native "OracleResultset_GetString";
+    bool next() native "OracleResultset_Next";
+
 }
 
 int connect(OracleConnection connection,
