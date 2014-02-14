@@ -1,10 +1,12 @@
 solutions = [
-  { "name"        : "oracledart-all.deps",
-    "url"         : "https://github.com/aam/oracledart/trunk/all.deps",
-    "deps_file"   : "DEPS",
-    "managed"     : True,
+  { "name"        : "oracledart",
+    "url"         : "https://github.com/aam/oracledart.git",
     "custom_deps" : {
     },
+    "custom_hooks": [{
+      "pattern": ".",
+      "action": ["python", "dart/third_party/gyp/gyp_main.py", "--depth=dart", "-Idart/tools/gyp/all.gypi", "oracledart/oracledart.gyp"],
+    }],
     "safesync_url": "",
   },
   { "name"        : "dart-all.deps",
