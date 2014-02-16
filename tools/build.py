@@ -1,52 +1,65 @@
+#!/usr/bin/python
+
 import platform
 import subprocess
 import os
 import sys
 
 def Main():
-  platformid = platform.system()
-  env = os.environ.copy()
-  if platformid == "Linux":
-    print "linux not supported"
-    return 2
-  elif platformid == "Darwin":
-    subprocess.call(["ln", "$ORACLE_OCCI_LIB_HOME/libocci.dylib.11.1 $ORACLE_OCCI_LIB_HOME/libocci.dylib"])
-    subprocess.call(["ln", "$ORACLE_OCCI_LIB_HOME/libclntsh.dylib.11.1 $ORACLE_OCCI_LIB_HOME/libclntsh.dylib"])
-    env["ORACLE_OCI_HOME"] = os.path.expanduser("~") + "/Downloads/instantclient_11_2/sdk"
-    env["ORACLE_OCCI_LIB_HOME"] = os.path.expanduser("~") + "/Downloads/instantclient_11_2-2"
-    args = ['xcodebuild', 
-            '-project', 'oracledart.xcodeproj',
-            '-configuration', 'ReleaseIA32',
-            'SYMROOT=%s/../dart/xcodebuild' % os.getcwd()]
-    extensionbinary = "../dart/xcodebuild/ReleaseIA32/liboracledart_extension.dylib"
-  elif platformid == "Windows" or platformid == "Microsoft":
-    if not "JAVA_HOME" in env:
-      print "JAVA_HOME is not set up"
-      return 3
-    args = ['devenv',
-        'oracledart.sln',
-        '/build',
-        'ReleaseIA32'
-    ]
-    extensionbinary = "..\\dart\\build\\ReleaseIA32\\oracledart_extension.dll"
-  else:
-    print "Unsupported platform"
-    return 1
-
-  print " ".join(args)
-  process = subprocess.Popen(args, stdin=None, env=env)
-  process.wait()
-  print "Completed with %d" % (process.returncode)
-  if process.returncode == 0:
-    if platformid == "Linux" or platformid == "Darwin":
+    platformid = platform.system()
+    env = os.environ.copy()
+    if platformid == "Linux":
+        env["ORACLE_OCI_HOME"] = (
+            "%s/Downloads/instantclient_11_2/sdk" % (os.path.expanduser("~")))
+        env["ORACLE_OCCI_LIB_HOME"] = (
+            "%s/Downloads/instantclient_11_2" % (os.path.expanduser("~")))
+        args = ['make', '-j', '8']
+        extensionlibrary = "out/Debug/lib.target/liboracledart_extension.so"
+    elif platformid == "Darwin":
+        ORACLE_OCCI_LIB_HOME = (
+            "%s/Downloads/instantclient_11_2-2" % (os.path.expanduser("~")))
         subprocess.call(
-          "cp ../dart/xcodebuild/ReleaseIA32/liboracledart_extension.dylib .",
-          shell=True)
+            ["ln",
+             "%s/libocci.dylib.11.1 %s/libocci.dylib" %
+             (ORACLE_OCCI_LIB_HOME, ORACLE_OCCI_LIB_HOME)])
+        subprocess.call(
+            ["ln",
+             "%s/ORACLE_OCCI_LIB_HOME/libclntsh.dylib.11.1 "
+             "%s/libclntsh.dylib" %
+             (ORACLE_OCCI_LIB_HOME, ORACLE_OCCI_LIB_HOME)])
+        env["ORACLE_OCI_HOME"] = (
+            "%s/Downloads/instantclient_11_2/sdk" % (os.path.expanduser("~")))
+        env["ORACLE_OCCI_LIB_HOME"] = ORACLE_OCCI_LIB_HOME
+        args = ['xcodebuild',
+                '-project', 'oracledart.xcodeproj',
+                '-configuration', 'ReleaseIA32',
+                'SYMROOT=%s/../dart/xcodebuild' % os.getcwd()]
+        extensionlibrary = (
+            "../dart/xcodebuild/ReleaseIA32/liboracledart_extension.dylib")
+    elif platformid == "Windows" or platformid == "Microsoft":
+        if not "JAVA_HOME" in env:
+            print "JAVA_HOME is not set up"
+            return 3
+        args = ['devenv',
+                'oracledart.sln',
+                '/build',
+                'ReleaseIA32']
+        extensionlibrary = (
+            "..\\dart\\build\\ReleaseIA32\\oracledart_extension.dll")
     else:
-        subprocess.call(
-          ["copy", "..\\dart\\build\\ReleaseIA32\\oracledart_extension.dll", "."],
-          shell=True)
-  return process.returncode
+        print "Unsupported platform"
+        return 1
+
+    print " ".join(args)
+    process = subprocess.Popen(args, stdin=None, env=env)
+    process.wait()
+    print "Completed with %d" % (process.returncode)
+    if process.returncode == 0:
+        if platformid == "Linux" or platformid == "Darwin":
+            subprocess.call("cp %s ." % (extensionlibrary), shell=True)
+        else:
+            subprocess.call(["copy", extensionlibrary, "."], shell=True)
+    return process.returncode
 
 if __name__ == '__main__':
-  sys.exit(Main())
+    sys.exit(Main())

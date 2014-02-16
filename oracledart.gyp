@@ -11,7 +11,7 @@
       'target_name': 'oracledart_extension',
       'type': 'shared_library',
       'dependencies': [
-        '../dart/runtime/dart-runtime.gyp:dart',
+#        '../dart/runtime/dart-runtime.gyp:dart',
       ],
       'include_dirs': [
         '$(ORACLE_OCI_HOME)/include',
@@ -42,6 +42,11 @@
           'cflags': [
             '-fPIC',
           ],
+          'link_settings': {                                                    
+            'libraries': [                                                      
+              '-locci', '-lclntsh', '-L$(ORACLE_OCCI_LIB_HOME)'                 
+            ]                                                                   
+          }
         }],
       ],
     },
