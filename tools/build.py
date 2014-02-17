@@ -40,6 +40,8 @@ def Main():
         if not "JAVA_HOME" in env:
             print "JAVA_HOME is not set up"
             return 3
+        env["ORACLE_OCI_HOME"] = (
+            "\%userprofile\%\\downloads\\instantclient-sdk-nt-12.1.0.1.0\\instantclient_12_1\\sdk")
         args = ['devenv',
                 'oracledart.sln',
                 '/build',

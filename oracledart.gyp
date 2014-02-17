@@ -26,6 +26,9 @@
       ],
       'conditions': [
         ['OS=="win"', {
+          'dependencies': [
+            '../dart/runtime/dart-runtime.gyp:dart',
+          ],
           'msvs_settings': {
             'VCLinkerTool': {
               'AdditionalDependencies': [ 'dart.lib', 'oci.lib', 'oraocci12.lib' ],
