@@ -39,7 +39,7 @@ def Main():
         env["ORACLE_OCI_HOME"] = (
             "%s\\downloads\\instantclient-sdk-nt-12.1.0.1.0\\instantclient_12_1\\sdk" %
             userhome)
-        buildCommand = ['devenv',
+        buildCommand = ['devenv.com',
                 'oracledart.sln',
                 '/build',
                 'ReleaseIA32']
