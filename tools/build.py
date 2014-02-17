@@ -20,13 +20,12 @@ def Main():
             "%s/Downloads/instantclient_11_2-2" % (os.path.expanduser("~")))
         subprocess.call(
             ["ln",
-             "%s/libocci.dylib.11.1 %s/libocci.dylib" %
-             (ORACLE_OCCI_LIB_HOME, ORACLE_OCCI_LIB_HOME)])
+             "%s/libocci.dylib.11.1" % ORACLE_OCCI_LIB_HOME,
+             "%s/libocci.dylib" % ORACLE_OCCI_LIB_HOME])
         subprocess.call(
             ["ln",
-             "%s/ORACLE_OCCI_LIB_HOME/libclntsh.dylib.11.1 "
-             "%s/libclntsh.dylib" %
-             (ORACLE_OCCI_LIB_HOME, ORACLE_OCCI_LIB_HOME)])
+             "%s/ORACLE_OCCI_LIB_HOME/libclntsh.dylib.11.1" % ORACLE_OCCI_LIB_HOME,
+             "%s/libclntsh.dylib" % ORACLE_OCCI_LIB_HOME])
         env["ORACLE_OCI_HOME"] = (
             "%s/Downloads/instantclient_11_2/sdk" % (os.path.expanduser("~")))
         env["ORACLE_OCCI_LIB_HOME"] = ORACLE_OCCI_LIB_HOME
