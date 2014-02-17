@@ -6,18 +6,16 @@ import os
 import sys
 
 def Main():
+    userhome = os.path.expanduser("~")
     platformid = platform.system()
     env = os.environ.copy()
     if platformid == "Linux":
-        env["ORACLE_OCI_HOME"] = (
-            "%s/Downloads/instantclient_11_2/sdk" % (os.path.expanduser("~")))
-        env["ORACLE_OCCI_LIB_HOME"] = (
-            "%s/Downloads/instantclient_11_2" % (os.path.expanduser("~")))
-        args = ['make', '-j', '8']
+        env["ORACLE_OCI_HOME"] = "%s/Downloads/instantclient_11_2/sdk" % userhome
+        env["ORACLE_OCCI_LIB_HOME"] = "%s/Downloads/instantclient_11_2" % userhome
+        buildCommand = ['make', '-j', '8']
         extensionlibrary = "out/Debug/lib.target/liboracledart_extension.so"
     elif platformid == "Darwin":
-        ORACLE_OCCI_LIB_HOME = (
-            "%s/Downloads/instantclient_11_2-2" % (os.path.expanduser("~")))
+        ORACLE_OCCI_LIB_HOME = "%s/Downloads/instantclient_11_2-2" % userhome
         subprocess.call(
             ["ln",
              "%s/libocci.dylib.11.1" % ORACLE_OCCI_LIB_HOME,
@@ -26,10 +24,9 @@ def Main():
             ["ln",
              "%s/ORACLE_OCCI_LIB_HOME/libclntsh.dylib.11.1" % ORACLE_OCCI_LIB_HOME,
              "%s/libclntsh.dylib" % ORACLE_OCCI_LIB_HOME])
-        env["ORACLE_OCI_HOME"] = (
-            "%s/Downloads/instantclient_11_2/sdk" % (os.path.expanduser("~")))
+        env["ORACLE_OCI_HOME"] = "%s/Downloads/instantclient_11_2/sdk" % userhome
         env["ORACLE_OCCI_LIB_HOME"] = ORACLE_OCCI_LIB_HOME
-        args = ['xcodebuild',
+        buildCommand = ['xcodebuild',
                 '-project', 'oracledart.xcodeproj',
                 '-configuration', 'ReleaseIA32',
                 'SYMROOT=%s/../dart/xcodebuild' % os.getcwd()]
@@ -41,8 +38,8 @@ def Main():
             return 3
         env["ORACLE_OCI_HOME"] = (
             "%s\\downloads\\instantclient-sdk-nt-12.1.0.1.0\\instantclient_12_1\\sdk" %
-            (os.path.expanduser("~")))
-        args = ['devenv',
+            userhome)
+        buildCommand = ['devenv',
                 'oracledart.sln',
                 '/build',
                 'ReleaseIA32']
@@ -52,8 +49,8 @@ def Main():
         print "Unsupported platform"
         return 1
 
-    print " ".join(args)
-    process = subprocess.Popen(args, stdin=None, env=env)
+    print " ".join(buildCommand)
+    process = subprocess.Popen(buildCommand, stdin=None, env=env)
     process.wait()
     print "Completed with %d" % (process.returncode)
     if process.returncode == 0:

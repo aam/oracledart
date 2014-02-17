@@ -7,20 +7,34 @@ library oracledart_synchronous_extension;
 import 'dart-ext:oracledart_extension';
 import 'dart:nativewrappers';
 
-class OracleConnection extends NativeFieldWrapperClass1 {
+abstract class OracleConnection {
+    factory OracleConnection.connect(string username, string password, string db) {
+        var connection = new _OracleConnection();
+        connection._connect(username, password, db);
+        return connection;
+    }
+    int select(string query);
 }
 
-class OracleResultset extends NativeFieldWrapperClass1 {
+class _OracleConnection extends NativeFieldWrapperClass1 implements OracleConnection {
+    int _connect(string username, string password, string db) native "OracleConnection_Connect";
+    int _select(OracleResultset resultset, string query) native "OracleConnection_Select";
+
+    OracleResultset select(string query) {
+        var resultset = new _OracleResultset();
+        _select(resultset, query);
+        return resultset;
+    }
+}
+
+abstract class OracleResultset {
+    int getInt(int index);
+    String getString(int index);
+    bool next();
+}
+
+class _OracleResultset extends NativeFieldWrapperClass1 implements OracleResultset {
     int getInt(int index) native "OracleResultset_GetInt";
     String getString(int index) native "OracleResultset_GetString";
     bool next() native "OracleResultset_Next";
-
 }
-
-int connect(OracleConnection connection,
-            string username,
-            string password,
-            string db) native "Connect";
-int select(OracleConnection connection,
-           OracleResultset resultset,
-           string query) native "Select";

@@ -36,7 +36,6 @@ struct OracleConnection {
   OracleConnection(std::string user, std::string password, std::string db) {
     env = oracle::occi::Environment::createEnvironment(oracle::occi::Environment::DEFAULT);
     conn = env->createConnection(user, password, db);
-//      conn = env->createConnection ("scott", "tiger", "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=w8-32-12core)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XE)(SERVER=DEDICATED)))");
   }
 
   void Terminate() {
@@ -84,7 +83,7 @@ static void OracleResultsetFinalizer(Dart_WeakPersistentHandle handle,
   oracle_resultset->Close();
 }
 
-void Connect(Dart_NativeArguments arguments) {
+void OracleConnection_Connect(Dart_NativeArguments arguments) {
   Dart_EnterScope();
 
   Dart_Handle connection_obj = Dart_GetNativeArgument(arguments, 0);
@@ -115,7 +114,7 @@ void Connect(Dart_NativeArguments arguments) {
   Dart_ExitScope();
 }
 
-void Select(Dart_NativeArguments arguments) {
+void OracleConnection_Select(Dart_NativeArguments arguments) {
   Dart_EnterScope();
 
   Dart_Handle connection_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
@@ -143,26 +142,6 @@ void Select(Dart_NativeArguments arguments) {
       resultset_obj,
       resultset,
       OracleResultsetFinalizer);
-
-  Dart_Handle result = HandleError(Dart_NewInteger(0));
-  Dart_SetReturnValue(arguments, result);
-  Dart_ExitScope();
-}
-
-void OracleResultset_GetData(Dart_NativeArguments arguments) {
-  Dart_EnterScope();
-
-  Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
-  OracleResultset* resultset;
-  HandleError(Dart_GetNativeInstanceField(
-    resultset_obj,
-    0,
-    reinterpret_cast<intptr_t*>(&resultset)));
-
-  while (resultset->resultset->next ()) {
-    std::cout << "author_id: " << resultset->resultset->getInt (1) << "  author_name: " 
-              << resultset->resultset->getString (2) << std::endl;
-  }
 
   Dart_Handle result = HandleError(Dart_NewInteger(0));
   Dart_SetReturnValue(arguments, result);
@@ -230,8 +209,8 @@ struct FunctionLookup {
 };
 
 FunctionLookup function_list[] = {
-    {"Connect", Connect},
-    {"Select", Select},
+    {"OracleConnection_Connect", OracleConnection_Connect},
+    {"OracleConnection_Select", OracleConnection_Select},
     {"OracleResultset_GetString", OracleResultset_GetString},
     {"OracleResultset_GetInt", OracleResultset_GetInt},
     {"OracleResultset_Next", OracleResultset_Next},
