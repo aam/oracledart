@@ -10,9 +10,6 @@
     {
       'target_name': 'oracledart_extension',
       'type': 'shared_library',
-      'dependencies': [
-#        '../dart/runtime/dart-runtime.gyp:dart',
-      ],
       'include_dirs': [
         '$(ORACLE_OCI_HOME)/include',
         '../dart/runtime'
@@ -27,7 +24,7 @@
       'conditions': [
         ['OS=="win"', {
           'dependencies': [
-            '../dart/runtime/dart-runtime.gyp:dart',
+            '../dart/runtime/dart-runtime.gyp:dart', # Windows build process needs dart.lib
           ],
           'msvs_settings': {
             'VCLinkerTool': {
