@@ -191,6 +191,12 @@ void OracleResultset_Get(Dart_NativeArguments arguments, oracle::occi::Type type
     case oracle::occi::OCCIDOUBLE:
       result = Dart_NewDouble(resultset->resultset->getDouble(index));
       break;
+    case oracle::occi::OCCIFLOAT:
+      result = Dart_NewDouble(resultset->resultset->getFloat(index));
+      break;
+    default:
+      Dart_PropagateError(Dart_NewApiError("Type is not supported by oracledart."));
+      break;
   }
   Dart_SetReturnValue(arguments, result);
   Dart_ExitScope();
@@ -208,6 +214,10 @@ void OracleResultset_GetDouble(Dart_NativeArguments arguments) {
   return OracleResultset_Get(arguments, oracle::occi::OCCIDOUBLE);
 }
 
+void OracleResultset_GetFloat(Dart_NativeArguments arguments) {
+  return OracleResultset_Get(arguments, oracle::occi::OCCIFLOAT);
+}
+
 struct FunctionLookup {
   const char* name;
   Dart_NativeFunction function;
@@ -219,6 +229,7 @@ FunctionLookup function_list[] = {
     {"OracleResultset_GetString", OracleResultset_GetString},
     {"OracleResultset_GetInt", OracleResultset_GetInt},
     {"OracleResultset_GetDouble", OracleResultset_GetDouble},
+    {"OracleResultset_GetFloat", OracleResultset_GetFloat},
     {"OracleResultset_Next", OracleResultset_Next},
     {NULL, NULL}};
 

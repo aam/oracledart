@@ -37,6 +37,7 @@ abstract class OracleResultset {
 class _OracleResultset extends NativeFieldWrapperClass1 implements OracleResultset {
     int getInt(int index) native "OracleResultset_GetInt";
     String getString(int index) native "OracleResultset_GetString";
+    double getFloat(int index) native "OracleResultset_GetFloat";
     double getDouble(int index) native "OracleResultset_GetDouble";
     bool next() native "OracleResultset_Next";
 }

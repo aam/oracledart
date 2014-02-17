@@ -26,7 +26,7 @@ void main() {
 
     resultset = connection.select("select job, avg(sal) from emp group by job");
     while (resultset.next()) {
-        print("${resultset.getString(1)} ${resultset.getDouble(2)}");
+        print("${resultset.getString(1)} ${resultset.getDouble(2)} ${resultset.getFloat(2)}");
     }
   }
 }
