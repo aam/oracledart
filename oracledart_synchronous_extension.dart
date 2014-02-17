@@ -30,11 +30,13 @@ class _OracleConnection extends NativeFieldWrapperClass1 implements OracleConnec
 abstract class OracleResultset {
     int getInt(int index);
     String getString(int index);
+    double getDouble(int index);
     bool next();
 }
 
 class _OracleResultset extends NativeFieldWrapperClass1 implements OracleResultset {
     int getInt(int index) native "OracleResultset_GetInt";
     String getString(int index) native "OracleResultset_GetString";
+    double getDouble(int index) native "OracleResultset_GetDouble";
     bool next() native "OracleResultset_Next";
 }

@@ -163,7 +163,7 @@ void OracleResultset_Next(Dart_NativeArguments arguments) {
   Dart_ExitScope();
 }
 
-void OracleResultset_GetInt(Dart_NativeArguments arguments) {
+void OracleResultset_Get(Dart_NativeArguments arguments, oracle::occi::Type type) {
   Dart_EnterScope();
 
   Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
@@ -177,30 +177,35 @@ void OracleResultset_GetInt(Dart_NativeArguments arguments) {
   int64_t index;
   HandleError(Dart_IntegerToInt64(index_obj, &index));
 
-  Dart_Handle result = HandleError(Dart_NewInteger(resultset->resultset->getInt(index)));
+  Dart_Handle result = NULL;
+  switch(type) {
+    case oracle::occi::OCCIINT:
+      result = HandleError(Dart_NewInteger(resultset->resultset->getInt(index)));
+      break;
+    case oracle::occi::OCCISTRING:
+    {
+      std::string s = resultset->resultset->getString(index);
+      result = Dart_NewStringFromCString(s.c_str());
+      break;
+    }
+    case oracle::occi::OCCIDOUBLE:
+      result = Dart_NewDouble(resultset->resultset->getDouble(index));
+      break;
+  }
   Dart_SetReturnValue(arguments, result);
   Dart_ExitScope();
 }
 
+void OracleResultset_GetInt(Dart_NativeArguments arguments) {
+  return OracleResultset_Get(arguments, oracle::occi::OCCIINT);
+}
+
 void OracleResultset_GetString(Dart_NativeArguments arguments) {
-  Dart_EnterScope();
+  return OracleResultset_Get(arguments, oracle::occi::OCCISTRING);
+}
 
-  Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
-  OracleResultset* resultset;
-  HandleError(Dart_GetNativeInstanceField(
-    resultset_obj,
-    0,
-    reinterpret_cast<intptr_t*>(&resultset)));
-
-  Dart_Handle index_obj = HandleError(Dart_GetNativeArgument(arguments, 1));
-  int64_t index;
-  HandleError(Dart_IntegerToInt64(index_obj, &index));
-
-  std::string s = resultset->resultset->getString(index);
-  Dart_Handle result = Dart_NewStringFromCString(s.c_str());
-
-  Dart_SetReturnValue(arguments, result);
-  Dart_ExitScope();
+void OracleResultset_GetDouble(Dart_NativeArguments arguments) {
+  return OracleResultset_Get(arguments, oracle::occi::OCCIDOUBLE);
 }
 
 struct FunctionLookup {
@@ -213,6 +218,7 @@ FunctionLookup function_list[] = {
     {"OracleConnection_Select", OracleConnection_Select},
     {"OracleResultset_GetString", OracleResultset_GetString},
     {"OracleResultset_GetInt", OracleResultset_GetInt},
+    {"OracleResultset_GetDouble", OracleResultset_GetDouble},
     {"OracleResultset_Next", OracleResultset_Next},
     {NULL, NULL}};
 

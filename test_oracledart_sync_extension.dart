@@ -23,5 +23,10 @@ void main() {
     while (resultset.next()) {
         print("${resultset.getInt(1)} ${resultset.getString(2)}");
     }
+
+    resultset = connection.select("select job, avg(sal) from emp group by job");
+    while (resultset.next()) {
+        print("${resultset.getString(1)} ${resultset.getDouble(2)}");
+    }
   }
 }
