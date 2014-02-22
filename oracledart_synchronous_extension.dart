@@ -8,17 +8,20 @@ import 'dart-ext:oracledart_extension';
 import 'dart:nativewrappers';
 
 abstract class OracleConnection {
-    factory OracleConnection.connect(String username, String password, String db) {
-        var connection = new _OracleConnection();
-        connection._connect(username, password, db);
-        return connection;
+    factory OracleConnection.connect(String username,
+                                     String password,
+                                     String db) {
+        return new _OracleConnection().._connect(username, password, db);
     }
     OracleResultset select(String query);
 }
 
-class _OracleConnection extends NativeFieldWrapperClass1 implements OracleConnection {
-    int _connect(String username, String password, String db) native "OracleConnection_Connect";
-    int _select(OracleResultset resultset, String query) native "OracleConnection_Select";
+class _OracleConnection extends NativeFieldWrapperClass1
+                        implements OracleConnection {
+    int _connect(String username, String password, String db)
+        native "OracleConnection_Connect";
+    int _select(OracleResultset resultset, String query)
+        native "OracleConnection_Select";
 
     OracleResultset select(String query) {
         var resultset = new _OracleResultset();
@@ -35,7 +38,8 @@ abstract class OracleResultset {
     bool next();
 }
 
-class _OracleResultset extends NativeFieldWrapperClass1 implements OracleResultset {
+class _OracleResultset extends NativeFieldWrapperClass1
+                       implements OracleResultset {
     int getInt(int index) native "OracleResultset_GetInt";
     String getString(int index) native "OracleResultset_GetString";
     double getFloat(int index) native "OracleResultset_GetFloat";

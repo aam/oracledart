@@ -17,16 +17,21 @@ void main() {
     OracleConnection connection = new OracleConnection.connect(
         "scott",
         "tiger",
-        "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=w8-32-12core)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XE)(SERVER=DEDICATED)))");
+        "(DESCRIPTION="
+          "(ADDRESS=(PROTOCOL=TCP)(HOST=w8-32-12core)(PORT=1521))"
+          "(CONNECT_DATA=(SERVICE_NAME=XE)(SERVER=DEDICATED)))");
 
-    OracleResultset resultset = connection.select("select empno, ename from emp");
+    OracleResultset resultset =
+        connection.select("select empno, ename from emp");
     while (resultset.next()) {
         print("${resultset.getInt(1)} ${resultset.getString(2)}");
     }
 
     resultset = connection.select("select job, avg(sal) from emp group by job");
     while (resultset.next()) {
-        print("${resultset.getString(1)} ${resultset.getDouble(2)} ${resultset.getFloat(2)}");
+        print("${resultset.getString(1)} "
+              "${resultset.getDouble(2)} "
+              "${resultset.getFloat(2)}");
     }
   }
 }
