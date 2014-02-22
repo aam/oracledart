@@ -8,41 +8,64 @@ import 'dart-ext:oracledart_extension';
 import 'dart:nativewrappers';
 
 abstract class OracleConnection {
-    factory OracleConnection.connect(String username,
-                                     String password,
-                                     String db) {
-        return new _OracleConnection().._connect(username, password, db);
-    }
-    OracleResultset select(String query);
+  factory OracleConnection.connect(String username,
+                                   String password,
+                                   String db) {
+    return new _OracleConnection().._connect(username, password, db);
+  }
+  OracleStatement createStatement(String query);
+  OracleResultset select(String query);
 }
 
 class _OracleConnection extends NativeFieldWrapperClass1
                         implements OracleConnection {
-    int _connect(String username, String password, String db)
-        native "OracleConnection_Connect";
-    int _select(OracleResultset resultset, String query)
-        native "OracleConnection_Select";
+  int _connect(String username, String password, String db)
+    native "OracleConnection_Connect";
+  int _createStatement(OracleStatement statement, String query)
+    native "OracleConnection_CreateStatement";
 
-    OracleResultset select(String query) {
-        var resultset = new _OracleResultset();
-        _select(resultset, query);
-        return resultset;
-    }
+  OracleStatement createStatement(String query) {
+    var statement = new _OracleStatement();
+    _createStatement(statement, query);
+    return statement;
+  }
+
+  OracleResultset select(String query) {
+    var statement = new _OracleStatement();
+    _createStatement(statement, query);
+    return statement.executeQuery();
+  }
+}
+
+abstract class OracleStatement {
+  OracleResultset executeQuery();
+  void setInt(int ndx, int value);
+}
+
+class _OracleStatement extends NativeFieldWrapperClass1
+                       implements OracleStatement {
+  int _execute(OracleResultset resultset) native "OracleStatement_Execute";
+  OracleResultset executeQuery() {
+    var resultset = new _OracleResultset();
+    _execute(resultset);
+    return resultset;
+  }
+  void setInt(int ndx, int value) native "OracleStatement_SetInt";
 }
 
 abstract class OracleResultset {
-    int getInt(int index);
-    String getString(int index);
-    double getDouble(int index);
-    double getFloat(int index);
-    bool next();
+  int getInt(int index);
+  String getString(int index);
+  double getDouble(int index);
+  double getFloat(int index);
+  bool next();
 }
 
 class _OracleResultset extends NativeFieldWrapperClass1
                        implements OracleResultset {
-    int getInt(int index) native "OracleResultset_GetInt";
-    String getString(int index) native "OracleResultset_GetString";
-    double getFloat(int index) native "OracleResultset_GetFloat";
-    double getDouble(int index) native "OracleResultset_GetDouble";
-    bool next() native "OracleResultset_Next";
+  int getInt(int index) native "OracleResultset_GetInt";
+  String getString(int index) native "OracleResultset_GetString";
+  double getFloat(int index) native "OracleResultset_GetFloat";
+  double getDouble(int index) native "OracleResultset_GetDouble";
+  bool next() native "OracleResultset_Next";
 }

@@ -47,38 +47,65 @@ struct OracleConnection {
   }
 };
 
-struct OracleResultset {
+struct OracleStatement {
   OracleConnection *connection;
   oracle::occi::Statement *statement;
+
+  OracleStatement(OracleConnection *connection,
+                  oracle::occi::Statement *statement):
+      connection(connection),
+      statement(statement) {}
+
+  void Close() {
+    if (connection != NULL && connection->conn != NULL) {
+      std::cout << "Closed statement" << std::endl;
+      connection->conn->terminateStatement(statement);
+      connection = NULL;
+      statement = NULL;
+    }
+  }
+};
+
+struct OracleResultset {
+  OracleStatement *statement;
   oracle::occi::ResultSet *resultset;
 
-  OracleResultset(OracleConnection *connection,
-                  oracle::occi::Statement *statement,
+  OracleResultset(OracleStatement *statement,
                   oracle::occi::ResultSet *resultset):
-      connection(connection),
       statement(statement),
       resultset(resultset) {}
 
   void Close() {
-    if (connection->conn != NULL) {
-      statement->closeResultSet(resultset);
-      connection->conn->terminateStatement(statement);
-    }
+    if (statement != NULL
+      && statement->statement != NULL
+      && statement->connection->conn != NULL) {
+      statement->statement->closeResultSet(resultset);
+      statement = NULL;
+      resultset = NULL;
+	  }
   }
 };
 
 static void OracleConnectionFinalizer(Dart_WeakPersistentHandle handle,
                                       void* pvoid_oracle_connection) {
   Dart_DeleteWeakPersistentHandle(handle);
-  OracleConnection* oracle_connection = 
+  OracleConnection* oracle_connection =
     static_cast<OracleConnection*>(pvoid_oracle_connection);
   oracle_connection->Terminate();
+}
+
+static void OracleStatementFinalizer(Dart_WeakPersistentHandle handle,
+                                     void* pvoid_oracle_statement) {
+  Dart_DeleteWeakPersistentHandle(handle);
+  OracleStatement* oracle_statement =
+    static_cast<OracleStatement*>(pvoid_oracle_statement);
+  oracle_statement->Close();
 }
 
 static void OracleResultsetFinalizer(Dart_WeakPersistentHandle handle,
                                      void* pvoid_oracle_resultset) {
   Dart_DeleteWeakPersistentHandle(handle);
-  OracleResultset* oracle_resultset = 
+  OracleResultset* oracle_resultset =
     static_cast<OracleResultset*>(pvoid_oracle_resultset);
   oracle_resultset->Close();
 }
@@ -114,7 +141,7 @@ void OracleConnection_Connect(Dart_NativeArguments arguments) {
   Dart_ExitScope();
 }
 
-void OracleConnection_Select(Dart_NativeArguments arguments) {
+void OracleConnection_CreateStatement(Dart_NativeArguments arguments) {
   Dart_EnterScope();
 
   Dart_Handle connection_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
@@ -123,16 +150,43 @@ void OracleConnection_Select(Dart_NativeArguments arguments) {
       connection_obj,
       0,
       reinterpret_cast<intptr_t*>(&connection)));
- 
-  Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 1));
+
+  Dart_Handle statement_obj = HandleError(Dart_GetNativeArgument(arguments, 1));
 
   Dart_Handle query_obj = HandleError(Dart_GetNativeArgument(arguments, 2));
   const char* query;
   HandleError(Dart_StringToCString(query_obj, &query));
 
   oracle::occi::Statement* stmt = connection->conn->createStatement(query);
-  oracle::occi::ResultSet *rset = stmt->executeQuery();
-  OracleResultset* resultset = new OracleResultset(connection, stmt, rset);
+  OracleStatement* oracleStatement = new OracleStatement(connection, stmt);
+  HandleError(Dart_SetNativeInstanceField(
+      statement_obj,
+      0,
+      reinterpret_cast<intptr_t>(oracleStatement)));
+
+  Dart_NewWeakPersistentHandle(
+      statement_obj,
+      oracleStatement,
+      OracleStatementFinalizer);
+
+  Dart_Handle result = HandleError(Dart_NewInteger(0));
+  Dart_SetReturnValue(arguments, result);
+  Dart_ExitScope();
+}
+
+void OracleStatement_Execute(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+
+  Dart_Handle statement_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  OracleStatement* oracleStatement;
+  HandleError(Dart_GetNativeInstanceField(
+      statement_obj,
+      0,
+      reinterpret_cast<intptr_t*>(&oracleStatement)));
+
+  Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 1));
+  oracle::occi::ResultSet *rset = oracleStatement->statement->executeQuery();
+  OracleResultset* resultset = new OracleResultset(oracleStatement, rset);
   HandleError(Dart_SetNativeInstanceField(
       resultset_obj,
       0,
@@ -142,6 +196,31 @@ void OracleConnection_Select(Dart_NativeArguments arguments) {
       resultset_obj,
       resultset,
       OracleResultsetFinalizer);
+
+  Dart_Handle result = HandleError(Dart_NewInteger(0));
+  Dart_SetReturnValue(arguments, result);
+  Dart_ExitScope();
+}
+
+void OracleStatement_SetInt(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+
+  Dart_Handle statement_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  OracleStatement* oracleStatement;
+  HandleError(Dart_GetNativeInstanceField(
+      statement_obj,
+      0,
+      reinterpret_cast<intptr_t*>(&oracleStatement)));
+
+  Dart_Handle index_obj = HandleError(Dart_GetNativeArgument(arguments, 1));
+  int64_t index;
+  HandleError(Dart_IntegerToInt64(index_obj, &index));
+
+  Dart_Handle value_obj = HandleError(Dart_GetNativeArgument(arguments, 2));
+  int64_t value;
+  HandleError(Dart_IntegerToInt64(value_obj, &value));
+
+  oracleStatement->statement->setInt(index, value);
 
   Dart_Handle result = HandleError(Dart_NewInteger(0));
   Dart_SetReturnValue(arguments, result);
@@ -225,7 +304,9 @@ struct FunctionLookup {
 
 FunctionLookup function_list[] = {
     {"OracleConnection_Connect", OracleConnection_Connect},
-    {"OracleConnection_Select", OracleConnection_Select},
+    {"OracleConnection_CreateStatement", OracleConnection_CreateStatement},
+    {"OracleStatement_Execute", OracleStatement_Execute},
+    {"OracleStatement_SetInt", OracleStatement_SetInt},
     {"OracleResultset_GetString", OracleResultset_GetString},
     {"OracleResultset_GetInt", OracleResultset_GetInt},
     {"OracleResultset_GetDouble", OracleResultset_GetDouble},

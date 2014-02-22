@@ -33,5 +33,13 @@ void main() {
               "${resultset.getDouble(2)} "
               "${resultset.getFloat(2)}");
     }
+
+    OracleStatement stmt =
+        connection.createStatement("select ename from emp where empno > :1");
+    stmt.setInt(1, 7700);
+    OracleResultset resultsetOver7700 = stmt.executeQuery();
+    while (resultsetOver7700.next()) {
+        print("${resultsetOver7700.getString(1)}");
+    }
   }
 }
