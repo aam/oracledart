@@ -8,19 +8,19 @@ import 'dart-ext:oracledart_extension';
 import 'dart:nativewrappers';
 
 abstract class OracleConnection {
-    factory OracleConnection.connect(string username, string password, string db) {
+    factory OracleConnection.connect(String username, String password, String db) {
         var connection = new _OracleConnection();
         connection._connect(username, password, db);
         return connection;
     }
-    int select(string query);
+    OracleResultset select(String query);
 }
 
 class _OracleConnection extends NativeFieldWrapperClass1 implements OracleConnection {
-    int _connect(string username, string password, string db) native "OracleConnection_Connect";
-    int _select(OracleResultset resultset, string query) native "OracleConnection_Select";
+    int _connect(String username, String password, String db) native "OracleConnection_Connect";
+    int _select(OracleResultset resultset, String query) native "OracleConnection_Select";
 
-    OracleResultset select(string query) {
+    OracleResultset select(String query) {
         var resultset = new _OracleResultset();
         _select(resultset, query);
         return resultset;
