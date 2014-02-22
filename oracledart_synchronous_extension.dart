@@ -31,6 +31,7 @@ abstract class OracleResultset {
     int getInt(int index);
     String getString(int index);
     double getDouble(int index);
+    double getFloat(int index);
     bool next();
 }
 
