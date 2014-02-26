@@ -25,13 +25,13 @@ class _OracleConnection extends NativeFieldWrapperClass1
     native "OracleConnection_CreateStatement";
 
   OracleStatement createStatement(String query) {
-    var statement = new _OracleStatement();
+    var statement = new _OracleStatement(this);
     _createStatement(statement, query);
     return statement;
   }
 
   OracleResultset select(String query) {
-    var statement = new _OracleStatement();
+    var statement = new _OracleStatement(this);
     _createStatement(statement, query);
     return statement.executeQuery();
   }
@@ -44,9 +44,12 @@ abstract class OracleStatement {
 
 class _OracleStatement extends NativeFieldWrapperClass1
                        implements OracleStatement {
+  OracleConnection connection;
+  _OracleStatement(this.connection);
+
   int _execute(OracleResultset resultset) native "OracleStatement_Execute";
   OracleResultset executeQuery() {
-    var resultset = new _OracleResultset();
+    var resultset = new _OracleResultset(this);
     _execute(resultset);
     return resultset;
   }
@@ -63,6 +66,9 @@ abstract class OracleResultset {
 
 class _OracleResultset extends NativeFieldWrapperClass1
                        implements OracleResultset {
+  OracleStatement statement;
+  _OracleResultset(this.statement);
+
   int getInt(int index) native "OracleResultset_GetInt";
   String getString(int index) native "OracleResultset_GetString";
   double getFloat(int index) native "OracleResultset_GetFloat";

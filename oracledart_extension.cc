@@ -41,7 +41,7 @@ struct OracleConnection {
   void Terminate() {
     env->terminateConnection(conn);
     oracle::occi::Environment::terminateEnvironment(env);
-    std::cout << "Closed connection" << std::endl;
+    std::cout << "Closing connection" << std::endl;
     conn = NULL;
     env = NULL;
   }
@@ -58,7 +58,7 @@ struct OracleStatement {
 
   void Close() {
     if (connection != NULL && connection->conn != NULL) {
-      std::cout << "Closed statement" << std::endl;
+      std::cout << "Closing statement" << std::endl;
       connection->conn->terminateStatement(statement);
       connection = NULL;
       statement = NULL;
@@ -77,8 +77,10 @@ struct OracleResultset {
 
   void Close() {
     if (statement != NULL
+      && resultset != NULL
       && statement->statement != NULL
       && statement->connection->conn != NULL) {
+      std::cout << "Closing resultset" << std::endl;
       statement->statement->closeResultSet(resultset);
       statement = NULL;
       resultset = NULL;
@@ -90,7 +92,7 @@ static void OracleConnectionFinalizer(Dart_WeakPersistentHandle handle,
                                       void* pvoid_oracle_connection) {
   Dart_DeleteWeakPersistentHandle(handle);
   OracleConnection* oracle_connection =
-    static_cast<OracleConnection*>(pvoid_oracle_connection);
+      static_cast<OracleConnection*>(pvoid_oracle_connection);
   oracle_connection->Terminate();
 }
 
@@ -98,7 +100,7 @@ static void OracleStatementFinalizer(Dart_WeakPersistentHandle handle,
                                      void* pvoid_oracle_statement) {
   Dart_DeleteWeakPersistentHandle(handle);
   OracleStatement* oracle_statement =
-    static_cast<OracleStatement*>(pvoid_oracle_statement);
+     static_cast<OracleStatement*>(pvoid_oracle_statement);
   oracle_statement->Close();
 }
 
@@ -106,7 +108,7 @@ static void OracleResultsetFinalizer(Dart_WeakPersistentHandle handle,
                                      void* pvoid_oracle_resultset) {
   Dart_DeleteWeakPersistentHandle(handle);
   OracleResultset* oracle_resultset =
-    static_cast<OracleResultset*>(pvoid_oracle_resultset);
+      static_cast<OracleResultset*>(pvoid_oracle_resultset);
   oracle_resultset->Close();
 }
 
@@ -263,7 +265,7 @@ void OracleResultset_Get(Dart_NativeArguments arguments, oracle::occi::Type type
       break;
     case oracle::occi::OCCISTRING:
     {
-      std::string s = resultset->resultset->getString(index);
+      std::string& s = resultset->resultset->getString(index);
       result = Dart_NewStringFromCString(s.c_str());
       break;
     }
