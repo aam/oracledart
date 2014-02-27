@@ -265,7 +265,7 @@ void OracleResultset_Get(Dart_NativeArguments arguments, oracle::occi::Type type
       break;
     case oracle::occi::OCCISTRING:
     {
-      std::string& s = resultset->resultset->getString(index);
+      std::string s = resultset->resultset->getString(index);
       result = Dart_NewStringFromCString(s.c_str());
       break;
     }
