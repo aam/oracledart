@@ -1,0 +1,6 @@
+name: oracledart
+version: 0.0.1
+author: Alexander Aprelev
+description: Library to allow Dart server programs to talk to Oracle
+dependencies:
+  unittest: any
