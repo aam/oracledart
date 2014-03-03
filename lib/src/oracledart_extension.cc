@@ -224,8 +224,6 @@ void OracleStatement_SetInt(Dart_NativeArguments arguments) {
 
   oracleStatement->statement->setInt(index, value);
 
-  Dart_Handle result = HandleError(Dart_NewInteger(0));
-  Dart_SetReturnValue(arguments, result);
   Dart_ExitScope();
 }
 
