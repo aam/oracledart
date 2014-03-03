@@ -55,9 +55,9 @@ def Main():
     print "Completed with %d" % (process.returncode)
     if process.returncode == 0:
         if platformid == "Linux" or platformid == "Darwin":
-            subprocess.call("cp %s ." % (extensionlibrary), shell=True)
+            subprocess.call("cp %s lib" % (extensionlibrary), shell=True)
         else:
-            subprocess.call(["copy", extensionlibrary, "."], shell=True)
+            subprocess.call(["copy", extensionlibrary, "lib"], shell=True)
     return process.returncode
 
 if __name__ == '__main__':
