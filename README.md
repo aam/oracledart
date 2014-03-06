@@ -5,4 +5,5 @@ Bring Oracle to Dart
 To Build
 ---
 
-Put https://github.com/aam/oracledart/blob/master/.gclient into locally created foldler and execute "gclient sync"
+1) Put https://github.com/aam/oracledart/blob/master/.gclient into locally created folder and execute "gclient sync"
+2) tools/build.py
