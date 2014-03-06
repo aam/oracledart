@@ -11,4 +11,4 @@ To Build
 Automated testing
 ---
 
-Automated test is running at http://buildbot.aprelev.com:8009/
+Automated test is running at http://buildbot.aprelev.com:8009/waterfall
