@@ -36,6 +36,7 @@ def Main():
         if not "JAVA_HOME" in env:
             print "JAVA_HOME is not set up"
             return 3
+        os.system("mklink /J third_party ..\\dart\\third_party")
         env["ORACLE_OCI_HOME"] = (
             "%s\\downloads\\instantclient-sdk-nt-12.1.0.1.0\\instantclient_12_1\\sdk" %
             userhome)
