@@ -15,7 +15,10 @@ def execute(args):
   return process.returncode
 
 def main():
-  shutil.copytree('dart/tools/gyp', 'oracledart/tools/gyp')
+  shutil.rmtree('oracledart/tools/gyp', ignore_errors=True)
+  shutil.copytree('dart/tools/gyp',
+      'oracledart/tools/gyp',
+      ignore=shutil.ignore_patterns('.svn'))
   args = ['python', 
           'dart/third_party/gyp/gyp_main.py',
           '--depth=oracledart',
