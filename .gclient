@@ -5,7 +5,8 @@ solutions = [
     },
     "custom_hooks": [{
       "pattern": ".",
-      "action": ["python", "dart/third_party/gyp/gyp_main.py", "--depth=dart", "-Idart/tools/gyp/all.gypi", "oracledart/oracledart.gyp"],
+      "action": ["python",
+                 "oracledart/tools/gyp_oracledart.py"],
     }],
     "safesync_url": "",
   },

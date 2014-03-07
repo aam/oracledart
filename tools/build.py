@@ -44,7 +44,7 @@ def Main():
                 '/build',
                 'ReleaseIA32']
         extensionlibrary = (
-            "..\\dart\\build\\ReleaseIA32\\oracledart_extension.dll")
+            "build\\ReleaseIA32\\oracledart_extension.dll")
     else:
         print "Unsupported platform"
         return 1
