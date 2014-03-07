@@ -12,8 +12,8 @@ def Main():
     if platformid == "Linux":
         env["ORACLE_OCI_HOME"] = "%s/Downloads/instantclient_11_2/sdk" % userhome
         env["ORACLE_OCCI_LIB_HOME"] = "%s/Downloads/instantclient_11_2" % userhome
-        buildCommand = ['make', '-j', '8']
-        extensionlibrary = "out/Debug/lib.target/liboracledart_extension.so"
+        buildCommand = ['make', '-j', '8', 'BUILDTYPE=ReleaseIA32']
+        extensionlibrary = "out/ReleaseIA32/lib.target/liboracledart_extension.so"
     elif platformid == "Darwin":
         ORACLE_OCCI_LIB_HOME = "%s/Downloads/instantclient_11_2-2" % userhome
         subprocess.call(
