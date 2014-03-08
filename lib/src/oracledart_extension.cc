@@ -139,6 +139,7 @@ void OracleConnection_Connect(Dart_NativeArguments arguments) {
   Dart_NewWeakPersistentHandle(
       connection_obj,
       connection,
+      0,
       OracleConnectionFinalizer);
 
   Dart_Handle result = HandleError(Dart_NewInteger(0));
@@ -172,6 +173,7 @@ void OracleConnection_CreateStatement(Dart_NativeArguments arguments) {
   Dart_NewWeakPersistentHandle(
       statement_obj,
       oracleStatement,
+      0,
       OracleStatementFinalizer);
 
   Dart_Handle result = HandleError(Dart_NewInteger(0));
@@ -200,6 +202,7 @@ void OracleStatement_Execute(Dart_NativeArguments arguments) {
   Dart_NewWeakPersistentHandle(
       resultset_obj,
       resultset,
+      0,
       OracleResultsetFinalizer);
 
   Dart_Handle result = HandleError(Dart_NewInteger(0));

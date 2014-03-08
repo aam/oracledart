@@ -21,6 +21,9 @@
       'defines': [
         'DART_SHARED_LIB',
       ],
+      'dependencies': [
+        '../dart/dart.gyp:create_sdk'
+      ],
       'conditions': [
         ['OS=="win"', {
           'dependencies': [
