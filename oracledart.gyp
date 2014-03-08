@@ -25,6 +25,7 @@
         ['OS=="win"', {
           'dependencies': [
             '../dart/runtime/dart-runtime.gyp:dart', # Windows build process needs dart.lib
+            '../dart/dart.gyp:create_sdk',
           ],
           'msvs_settings': {
             'VCLinkerTool': {
