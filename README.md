@@ -11,5 +11,5 @@ To Build
 Automated testing
 ---
 
-Automated test is running at http://buildbot.aprelev.com:8009/waterfall.
+Automated test is running at http://buildbot.aprelev.com:8009/console.
 Tests are automatically executed on three platforms: Windows, Ubuntu and Mac on every commit into dart bleeding_edge branch and every commit into OracleDart git repository.
