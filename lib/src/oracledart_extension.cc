@@ -147,6 +147,51 @@ void OracleConnection_Connect(Dart_NativeArguments arguments) {
   Dart_ExitScope();
 }
 
+void wrappedConnect(Dart_Port dest_port_id,
+                    Dart_CObject* message) {
+  Dart_Port reply_port_id = ILLEGAL_PORT;
+  if (message->type == Dart_CObject_kArray &&
+      message->value.as_array.length == 4) {
+    Dart_CObject* dco_username = message->value.as_array.values[0];
+    Dart_CObject* dco_password = message->value.as_array.values[1];
+    Dart_CObject* dco_db = message->value.as_array.values[2];
+    Dart_CObject* dco_reply_port = message->value.as_array.values[3];
+    if (dco_username->type == Dart_CObject_kString &&
+        dco_password->type == Dart_CObject_kString &&
+        dco_db->type == Dart_CObject_kString &&
+        dco_reply_port->type == Dart_CObject_kSendPort) {
+      char* username = dco_username->value.as_string;
+      char* password = dco_password->value.as_string;
+      char* db= dco_db->value.as_string;
+      reply_port_id = dco_reply_port->value.as_send_port;
+
+      OracleConnection* connection = new OracleConnection(username, password, db);
+
+      Dart_CObject result;
+      result.type = Dart_CObject_kBool;
+      result.value.as_bool = true;
+      Dart_PostCObject(reply_port_id, &result);
+      return;
+    }
+    Dart_CObject result;
+    result.type = Dart_CObject_kNull;
+    Dart_PostCObject(reply_port_id, &result);
+  }
+}
+
+void oracleServicePort(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+  Dart_SetReturnValue(arguments, Dart_Null());
+  Dart_Port service_port =
+    Dart_NewNativePort("OracleServicePort", wrappedConnect, true);
+  if (service_port != ILLEGAL_PORT) {
+    Dart_Handle send_port = HandleError(
+      Dart_NewSendPort(service_port));
+    Dart_SetReturnValue(arguments, send_port);
+  }
+  Dart_ExitScope();
+}
+
 void OracleConnection_CreateStatement(Dart_NativeArguments arguments) {
   Dart_EnterScope();
 
@@ -344,6 +389,9 @@ FunctionLookup function_list[] = {
     {"OracleResultset_GetDouble", OracleResultset_GetDouble},
     {"OracleResultset_GetFloat", OracleResultset_GetFloat},
     {"OracleResultset_Next", OracleResultset_Next},
+
+    {"Oracle_ServicePort", oracleServicePort},
+
     {NULL, NULL}};
 
 Dart_NativeFunction ResolveName(Dart_Handle name,
