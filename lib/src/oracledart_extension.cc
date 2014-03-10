@@ -169,7 +169,7 @@ void wrappedConnect(Dart_Port dest_port_id,
 
       Dart_CObject result;
       result.type = Dart_CObject_kBool;
-      result.value.as_bool = true;
+      result.value.as_bool = connection != NULL;
       Dart_PostCObject(reply_port_id, &result);
       return;
     }
