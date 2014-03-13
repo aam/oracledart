@@ -130,7 +130,13 @@ void OracleConnection_Connect(Dart_NativeArguments arguments) {
   const char* db;
   HandleError(Dart_StringToCString(db_object, &db));
 
-  OracleConnection* connection = new OracleConnection(username, password, db);
+  OracleConnection* connection = NULL;
+  try {
+   connection = new OracleConnection(username, password, db);
+  } catch(oracle::occi::SQLException exception) {
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+  }
+
   HandleError(Dart_SetNativeInstanceField(
       connection_obj,
       0,
@@ -144,51 +150,6 @@ void OracleConnection_Connect(Dart_NativeArguments arguments) {
 
   Dart_Handle result = HandleError(Dart_NewInteger(0));
   Dart_SetReturnValue(arguments, result);
-  Dart_ExitScope();
-}
-
-void wrappedConnect(Dart_Port dest_port_id,
-                    Dart_CObject* message) {
-  Dart_Port reply_port_id = ILLEGAL_PORT;
-  if (message->type == Dart_CObject_kArray &&
-      message->value.as_array.length == 4) {
-    Dart_CObject* dco_username = message->value.as_array.values[0];
-    Dart_CObject* dco_password = message->value.as_array.values[1];
-    Dart_CObject* dco_db = message->value.as_array.values[2];
-    Dart_CObject* dco_reply_port = message->value.as_array.values[3];
-    if (dco_username->type == Dart_CObject_kString &&
-        dco_password->type == Dart_CObject_kString &&
-        dco_db->type == Dart_CObject_kString &&
-        dco_reply_port->type == Dart_CObject_kSendPort) {
-      char* username = dco_username->value.as_string;
-      char* password = dco_password->value.as_string;
-      char* db= dco_db->value.as_string;
-      reply_port_id = dco_reply_port->value.as_send_port;
-
-      OracleConnection* connection = new OracleConnection(username, password, db);
-
-      Dart_CObject result;
-      result.type = Dart_CObject_kBool;
-      result.value.as_bool = connection != NULL;
-      Dart_PostCObject(reply_port_id, &result);
-      return;
-    }
-    Dart_CObject result;
-    result.type = Dart_CObject_kNull;
-    Dart_PostCObject(reply_port_id, &result);
-  }
-}
-
-void oracleServicePort(Dart_NativeArguments arguments) {
-  Dart_EnterScope();
-  Dart_SetReturnValue(arguments, Dart_Null());
-  Dart_Port service_port =
-    Dart_NewNativePort("OracleServicePort", wrappedConnect, true);
-  if (service_port != ILLEGAL_PORT) {
-    Dart_Handle send_port = HandleError(
-      Dart_NewSendPort(service_port));
-    Dart_SetReturnValue(arguments, send_port);
-  }
   Dart_ExitScope();
 }
 
@@ -208,8 +169,14 @@ void OracleConnection_CreateStatement(Dart_NativeArguments arguments) {
   const char* query;
   HandleError(Dart_StringToCString(query_obj, &query));
 
-  oracle::occi::Statement* stmt = connection->conn->createStatement(query);
-  OracleStatement* oracleStatement = new OracleStatement(connection, stmt);
+  OracleStatement* oracleStatement = NULL;
+  try {
+    oracle::occi::Statement* stmt = connection->conn->createStatement(query);
+    oracleStatement = new OracleStatement(connection, stmt);
+  } catch(oracle::occi::SQLException exception) {
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+  }
+
   HandleError(Dart_SetNativeInstanceField(
       statement_obj,
       0,
@@ -237,7 +204,13 @@ void OracleStatement_Execute(Dart_NativeArguments arguments) {
       reinterpret_cast<intptr_t*>(&oracleStatement)));
 
   Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 1));
-  oracle::occi::ResultSet *rset = oracleStatement->statement->executeQuery();
+  oracle::occi::ResultSet *rset = NULL;
+  try {
+    rset = oracleStatement->statement->executeQuery();
+  } catch(oracle::occi::SQLException exception) {
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+  }
+
   OracleResultset* resultset = new OracleResultset(oracleStatement, rset);
   HandleError(Dart_SetNativeInstanceField(
       resultset_obj,
@@ -273,7 +246,11 @@ void OracleStatement_SetInt(Dart_NativeArguments arguments) {
   int64_t value;
   HandleError(Dart_IntegerToInt64(value_obj, &value));
 
-  oracleStatement->statement->setInt(index, value);
+  try {
+    oracleStatement->statement->setInt(index, value);
+  } catch(oracle::occi::SQLException exception) {
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+  }
 
   Dart_ExitScope();
 }
@@ -296,7 +273,11 @@ void OracleStatement_SetString(Dart_NativeArguments arguments) {
   const char* value;
   HandleError(Dart_StringToCString(value_obj, &value));
 
-  oracleStatement->statement->setString(index, value);
+  try {
+    oracleStatement->statement->setString(index, value);
+  } catch(oracle::occi::SQLException exception) {
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+  }
 
 //  Dart_Handle result = HandleError(Dart_NewInteger(0));
 //  Dart_SetReturnValue(arguments, result);
@@ -313,8 +294,13 @@ void OracleResultset_Next(Dart_NativeArguments arguments) {
     0,
     reinterpret_cast<intptr_t*>(&resultset)));
 
-  Dart_Handle result = HandleError(Dart_NewBoolean(resultset->resultset->next()));
-  Dart_SetReturnValue(arguments, result);
+  try {
+    Dart_Handle result = HandleError(Dart_NewBoolean(resultset->resultset->next()));
+    Dart_SetReturnValue(arguments, result);
+  } catch(oracle::occi::SQLException exception) {
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+  }
+
   Dart_ExitScope();
 }
 
@@ -333,25 +319,29 @@ void OracleResultset_Get(Dart_NativeArguments arguments, oracle::occi::Type type
   HandleError(Dart_IntegerToInt64(index_obj, &index));
 
   Dart_Handle result = NULL;
-  switch(type) {
-    case oracle::occi::OCCIINT:
-      result = HandleError(Dart_NewInteger(resultset->resultset->getInt(index)));
-      break;
-    case oracle::occi::OCCISTRING:
-    {
-      std::string s = resultset->resultset->getString(index);
-      result = Dart_NewStringFromCString(s.c_str());
-      break;
+  try {
+    switch(type) {
+      case oracle::occi::OCCIINT:
+        result = HandleError(Dart_NewInteger(resultset->resultset->getInt(index)));
+        break;
+      case oracle::occi::OCCISTRING:
+      {
+        std::string s = resultset->resultset->getString(index);
+        result = Dart_NewStringFromCString(s.c_str());
+        break;
+      }
+      case oracle::occi::OCCIDOUBLE:
+        result = Dart_NewDouble(resultset->resultset->getDouble(index));
+        break;
+      case oracle::occi::OCCIFLOAT:
+        result = Dart_NewDouble(resultset->resultset->getFloat(index));
+        break;
+      default:
+        Dart_PropagateError(Dart_NewApiError("Type is not supported by oracledart."));
+        break;
     }
-    case oracle::occi::OCCIDOUBLE:
-      result = Dart_NewDouble(resultset->resultset->getDouble(index));
-      break;
-    case oracle::occi::OCCIFLOAT:
-      result = Dart_NewDouble(resultset->resultset->getFloat(index));
-      break;
-    default:
-      Dart_PropagateError(Dart_NewApiError("Type is not supported by oracledart."));
-      break;
+  } catch(oracle::occi::SQLException exception) {
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
   }
   Dart_SetReturnValue(arguments, result);
   Dart_ExitScope();
@@ -389,8 +379,6 @@ FunctionLookup function_list[] = {
     {"OracleResultset_GetDouble", OracleResultset_GetDouble},
     {"OracleResultset_GetFloat", OracleResultset_GetFloat},
     {"OracleResultset_Next", OracleResultset_Next},
-
-    {"Oracle_ServicePort", oracleServicePort},
 
     {NULL, NULL}};
 
