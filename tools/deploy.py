@@ -55,8 +55,8 @@ def Main():
     result = subprocess.call(["git", "push"])
     if (result != 0):
         return result
-
     os.chdir(original_workingdirectory)
+    os.rmdir(tempdir)
 
 if __name__ == '__main__':
     sys.exit(Main())
