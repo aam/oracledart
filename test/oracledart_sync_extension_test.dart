@@ -3,7 +3,7 @@ library oracledart_sync_extension_test;
 import 'package:unittest/unittest.dart';
 import 'package:unittest/vm_config.dart';
 
-import 'package:oracledart/oracledart_synchronous_extension.dart';
+import 'package:oracledart/oracledart.dart';
 
 void main() {
   useVMConfiguration();

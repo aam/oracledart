@@ -2,10 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library oracledart;
-
-import 'dart-ext:oracledart_extension';
-import 'dart:nativewrappers';
+part of oracledart;
 
 abstract class OracleConnection {
   factory OracleConnection.connect(String username,
