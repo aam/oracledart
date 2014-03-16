@@ -334,7 +334,7 @@ void OracleResultset_Get(Dart_NativeArguments arguments, oracle::occi::Type type
         result = Dart_NewDouble(resultset->resultset->getFloat(index));
         break;
       default:
-        Dart_PropagateError(Dart_NewApiError("Type is not supported by OracleDart."));
+        Dart_PropagateError(Dart_NewApiError("Requested type is not supported by OracleDart."));
         break;
     }
   } catch(oracle::occi::SQLException exception) {
