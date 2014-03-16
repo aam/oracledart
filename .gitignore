@@ -7,3 +7,8 @@
 /*.vcxproj.filters
 /*.vcxproj.user
 /*.xcodeproj
+/oracledart.opensdf
+/oracledart.sdf
+/oracledart.v11.suo
+/third_party/
+/tools/gyp/
