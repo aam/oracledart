@@ -1,6 +1,11 @@
 Bring Oracle to Dart
 ===
 
+To Use
+---
+
+This extension requires Oracle Instant Client being present on the machine.
+It is being tested with version instantclient-basic-nt-12.1.0.1.0.
 
 To Build
 ---
