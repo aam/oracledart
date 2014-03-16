@@ -1,3 +1,5 @@
+Bring Oracle to Dart
+===
 
 Goal
 ---
@@ -40,15 +42,31 @@ CLERK
 To Use
 ---
 
-This extension requires Oracle Instant Client being present on the machine.
-It is being tested with version instantclient-basic-nt-12.1.0.1.0.
+1. This extension is built with bleeding_edge of Dart. 
+   Since Dart native extensions use C++ dart_api interface to integrate into Dart, they won't be necessarily compatible with older version of Dart.
 
-You need to have OCCI binaries in the path for extension to work.
-Here is how sample path setting might look like:
+2. This extension requires Oracle Instant Client being present on the machine.
+   It is being tested with version instantclient-basic-nt-12.1.0.1.0 on Windows, instantclient_11_2 on Linux and Mac.
 
+   You need to have OCCI binaries in the path for extension to work.
+
+   Here is how sample path setting might look like on Windows:
 ```shell
 set path=%userprofile%\downloads\instantclient-basic-nt-12.1.0.1.0\instantclient_12_1\vc11;%userprofile%\downloads\instantclient-basic-nt-12.1.0.1.0\instantclient_12_1;%path%
 ```
+   on Linux
+```shell
+export LD_LIBRARY_PATH=~/Downloads/instantclient_11_2
+```
+   or on Mac
+```shell
+export DYLD_LIBRARY_PATH=~/Downloads/instantclient_11_2-2
+```
+
+Source code
+---
+
+Complete source code including C++ modules is at https://github.com/aam/oracledart
 
 To Build
 ---
