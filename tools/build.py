@@ -57,12 +57,12 @@ def Main():
     if process.returncode == 0:
         if platformid == "Linux" or platformid == "Darwin":
             subprocess.call("cp %s lib" % (extensionlibrary), shell=True)
-            subprocess.call(
-                ["./tools/deploy.py",
-                 "-f", extensionlibrary,
-                 "-p", "ssh://git@github.com/aam/oracledart_dist.git"])
         else:
             subprocess.call(["copy", extensionlibrary, "lib"], shell=True)
+        subprocess.call(
+            ["python", "./tools/deploy.py",
+             "-f", extensionlibrary,
+             "-p", "ssh://git@github.com/aam/oracledart_dist.git"])
     return process.returncode
 
 if __name__ == '__main__':
