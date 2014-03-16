@@ -19,6 +19,31 @@ def main():
   shutil.copytree('dart/tools/gyp',
       'oracledart/tools/gyp',
       ignore=shutil.ignore_patterns('.svn'))
+  infile = open('dart/tools/gyp/configurations_msvs.gypi')
+  outfile = open('oracledart/tools/gyp/configurations_msvs.gypi', 'w')
+  for line in infile:
+    line = line.replace("'ExceptionHandling': '0',", "'ExceptionHandling': '1',")
+    outfile.write(line)
+  infile.close()
+  outfile.close()
+
+  infile = open('dart/tools/gyp/configurations_make.gypi')
+  outfile = open('oracledart/tools/gyp/configurations_make.gypi', 'w')
+  for line in infile:
+    line = line.replace("'-fno-exceptions',", "'-fexceptions',")
+    outfile.write(line)
+  infile.close()
+  outfile.close()
+
+  infile = open('dart/tools/gyp/configurations_xcode.gypi')
+  outfile = open('oracledart/tools/gyp/configurations_xcode.gypi', 'w')
+  for line in infile:
+    line = line.replace("'GCC_ENABLE_CPP_EXCEPTIONS': 'NO', # -fno-exceptions", 
+        "'GCC_ENABLE_CPP_EXCEPTIONS': 'YES', # -fexceptions")
+    outfile.write(line)
+  infile.close()
+  outfile.close()
+
   args = ['python', 
           'dart/third_party/gyp/gyp_main.py',
           '--depth=oracledart',
