@@ -5,7 +5,34 @@ import subprocess
 import tempfile
 import platform
 import sys
+import shutil
+import time
 
+def deploy(copycommand, original_workingdirectory, tempdir, filename, options):
+    os.chdir(tempdir)
+    result = subprocess.call(["git", "clone", options.publishToRepo, tempdir])
+    if (result != 0):
+        return result
+    result = subprocess.call("%s %s %s" %
+                    (copycommand,
+                        os.path.join(original_workingdirectory, options.file),
+                     os.path.join(tempdir, "lib", filename)),
+                    shell=True)
+    if (result != 0):
+        return result
+    result = subprocess.call(["git", "add", os.path.join("lib", filename)])
+    print("git add -> %d" % result)
+    if (result != 0):
+        return result
+    result = subprocess.call(["git", "commit",
+                     "-m", 'Automatic build binary update'])
+    print("git commit -> %d" % result)
+    if (result != 0):
+        return result
+    result = subprocess.call(["git", "push"])
+    print("git push -> %d" % result)
+    if (result != 0):
+        return result
 
 def Main():
     platformid = platform.system()
@@ -34,29 +61,25 @@ def Main():
 
     tempdir = tempfile.mkdtemp(prefix='oracledart_dist')
     original_workingdirectory = os.getcwd()
-    os.chdir(tempdir)
-    result = subprocess.call(["git", "clone", options.publishToRepo, tempdir])
-    if (result != 0):
-        return result
-    result = subprocess.call("%s %s %s" %
-                    (copycommand,
-                        os.path.join(original_workingdirectory, options.file),
-                     os.path.join(tempdir, "lib", filename)),
-                    shell=True)
-    if (result != 0):
-        return result
-    result = subprocess.call(["git", "add", os.path.join("lib", filename)])
-    if (result != 0):
-        return result
-    result = subprocess.call(["git", "commit",
-                     "-m", 'Automatic build binary update'])
-    if (result != 0):
-        return result
-    result = subprocess.call(["git", "push"])
-    if (result != 0):
-        return result
+    result = deploy(copycommand, original_workingdirectory, tempdir, filename, options)
     os.chdir(original_workingdirectory)
-    os.rmdir(tempdir)
+    print("Now in %s" % os.getcwd())
+    cnt = 0
+    while cnt < 5:
+        try:
+            if platformid == "Linux" or platformid == "Darwin":
+                subprocess.call(["rm", "-rf", tempdir], shell=True)
+            elif platformid == "Windows" or platformid == "Microsoft":
+                subprocess.call(["rmdir", "/s", "/q", tempdir], shell=True)
+            else:
+                raise "Unexpeced platform - should have been caught earlier"
+            print("Removed %s" % (tempdir))
+            break
+        except:
+            print "Failed to delete %s. Sleeping..." % (tempdir)
+            cnt += 1
+        time.sleep(5)
+    return result
 
 if __name__ == '__main__':
     sys.exit(Main())
