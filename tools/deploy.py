@@ -68,7 +68,7 @@ def Main():
     while cnt < 5:
         try:
             if platformid == "Linux" or platformid == "Darwin":
-                subprocess.call(["rm", "-rf", tempdir], shell=True)
+                subprocess.call(["rm", "-rf", tempdir])
             elif platformid == "Windows" or platformid == "Microsoft":
                 subprocess.call(["rmdir", "/s", "/q", tempdir], shell=True)
             else:
