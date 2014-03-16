@@ -41,7 +41,6 @@ struct OracleConnection {
   void Terminate() {
     env->terminateConnection(conn);
     oracle::occi::Environment::terminateEnvironment(env);
-    std::cout << "Closing connection" << std::endl;
     conn = NULL;
     env = NULL;
   }
@@ -58,7 +57,6 @@ struct OracleStatement {
 
   void Close() {
     if (connection != NULL && connection->conn != NULL) {
-      std::cout << "Closing statement" << std::endl;
       connection->conn->terminateStatement(statement);
       connection = NULL;
       statement = NULL;
@@ -80,7 +78,6 @@ struct OracleResultset {
       && resultset != NULL
       && statement->statement != NULL
       && statement->connection->conn != NULL) {
-      std::cout << "Closing resultset" << std::endl;
       statement->statement->closeResultSet(resultset);
       statement = NULL;
       resultset = NULL;
