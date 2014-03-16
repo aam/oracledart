@@ -1,6 +1,7 @@
-// Copyright (c) 2012, the Dart project authors.  Please see the AUTHORS file
+// Copyright (c) 2014, Alexander Aprelev.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -276,8 +277,6 @@ void OracleStatement_SetString(Dart_NativeArguments arguments) {
     Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
   }
 
-//  Dart_Handle result = HandleError(Dart_NewInteger(0));
-//  Dart_SetReturnValue(arguments, result);
   Dart_ExitScope();
 }
 
