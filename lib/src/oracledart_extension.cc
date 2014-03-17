@@ -331,7 +331,10 @@ void OracleResultset_Get(Dart_NativeArguments arguments, oracle::occi::Type type
         break;
     }
   } catch(oracle::occi::SQLException exception) {
-    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+    Dart_PropagateError(
+      Dart_NewUnhandledExceptionError(
+        Dart_NewStringFromCString(
+          exception.getMessage().c_str())));
   }
   Dart_SetReturnValue(arguments, result);
   Dart_ExitScope();
