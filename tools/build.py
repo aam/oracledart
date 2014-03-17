@@ -4,8 +4,16 @@ import platform
 import subprocess
 import os
 import sys
+import optparse
+import parser
 
 def Main():
+    parser = optparse.OptionParser()
+    parser.add_option("-p", "--publishToRepo",
+        help='Publish binaries to specified dist repo.',
+        default=None)
+    (options, args) = parser.parse_args()
+
     userhome = os.path.expanduser("~")
     platformid = platform.system()
     env = os.environ.copy()
@@ -59,8 +67,9 @@ def Main():
             subprocess.call("cp %s lib" % (extensionlibrary), shell=True)
         else:
             subprocess.call(["copy", extensionlibrary, "lib"], shell=True)
-        subprocess.call(
-            ["python", "./tools/deploy.py", "-p", "ssh://git@github.com/aam/oracledart_dist.git"])
+        if (options.publishToRepo != None):
+            subprocess.call(
+                ["python", "./tools/deploy.py", "-p", options.publishToRepo])
     return process.returncode
 
 if __name__ == '__main__':

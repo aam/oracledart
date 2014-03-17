@@ -146,8 +146,6 @@ void OracleConnection_Connect(Dart_NativeArguments arguments) {
       0,
       OracleConnectionFinalizer);
 
-  Dart_Handle result = HandleError(Dart_NewInteger(0));
-  Dart_SetReturnValue(arguments, result);
   Dart_ExitScope();
 }
 
@@ -186,8 +184,6 @@ void OracleConnection_CreateStatement(Dart_NativeArguments arguments) {
       0,
       OracleStatementFinalizer);
 
-  Dart_Handle result = HandleError(Dart_NewInteger(0));
-  Dart_SetReturnValue(arguments, result);
   Dart_ExitScope();
 }
 
@@ -221,8 +217,6 @@ void OracleStatement_Execute(Dart_NativeArguments arguments) {
       0,
       OracleResultsetFinalizer);
 
-  Dart_Handle result = HandleError(Dart_NewInteger(0));
-  Dart_SetReturnValue(arguments, result);
   Dart_ExitScope();
 }
 

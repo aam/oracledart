@@ -16,9 +16,9 @@ abstract class OracleConnection {
 
 class _OracleConnection extends NativeFieldWrapperClass1
                         implements OracleConnection {
-  int _connect(String username, String password, String db)
+  void _connect(String username, String password, String db)
     native "OracleConnection_Connect";
-  int _createStatement(OracleStatement statement, String query)
+  void _createStatement(OracleStatement statement, String query)
     native "OracleConnection_CreateStatement";
 
   OracleStatement createStatement(String query) {
