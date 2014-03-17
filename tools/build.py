@@ -60,9 +60,7 @@ def Main():
         else:
             subprocess.call(["copy", extensionlibrary, "lib"], shell=True)
         subprocess.call(
-            ["python", "./tools/deploy.py",
-             "-f", extensionlibrary,
-             "-p", "ssh://git@github.com/aam/oracledart_dist.git"])
+            ["python", "./tools/deploy.py", "-p", "ssh://git@github.com/aam/oracledart_dist.git"])
     return process.returncode
 
 if __name__ == '__main__':
