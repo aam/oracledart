@@ -5,6 +5,8 @@ Goal
 ---
 Allows server-side Dart access Oracle server.
 
+Avialable as a pub package at http://pub.dartlang.org/packages/oracledart.
+
 Sample
 ---
 ```dart
