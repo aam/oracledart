@@ -16,8 +16,7 @@ def deploy(original_workingdirectory, tempdir, options):
 
     platformid = platform.system()
     if platformid == "Linux" or platformid == "Darwin":
-        subprocess.call("cp -r %s %s" % (os.path.join(original_workingdirectory, "lib/"), tempdir), shell=True)
-        subprocess.call("cp -r %s %s" % (os.path.join(original_workingdirectory, "test/"), tempdir), shell=True)
+        subprocess.call("cp %s %s" % (options.filename, os.path.join(tempdir, "lib")), shell=True)
     elif platformid == "Windows" or platformid == "Microsoft":
         f = open("package_exclusion.txt", "w")
         f.write("packages\\\n")
@@ -25,19 +24,16 @@ def deploy(original_workingdirectory, tempdir, options):
         f.write("lib\\src\\\n")
         f.write("lib/src/\n")
         f.close()
-        print("xcopy %s %s /s/i/y /exclude:package_exclusion.txt" %
-                (os.path.join(original_workingdirectory, "lib"),
-                 os.path.join(tempdir, "lib")))
         subprocess.call("xcopy %s %s /s/i/y /exclude:package_exclusion.txt" %
                 (os.path.join(original_workingdirectory, "lib"),
                  os.path.join(tempdir, "lib")), shell=True)
-        print("xcopy %s %s /s/i/y /exclude:package_exclusion.txt" %
-                (os.path.join(original_workingdirectory, "test"),
-                 os.path.join(tempdir, "test")))
         subprocess.call("xcopy %s %s /s/i/y /exclude:package_exclusion.txt" %
                 (os.path.join(original_workingdirectory, "test"),
                  os.path.join(tempdir, "test")), shell=True)
         os.remove("package_exclusion.txt")
+        subprocess.call("copy %s %s" %
+                (os.path.join(original_workingdirectory, "pubspec.yaml"),
+                 tempdir), shell=True)
     else:
         raise "Unexpected platform %s - should have been caught earlier" % platformid
     result = subprocess.call(["git", "commit", "-a", "-m", 'Automatic build binary update'])
@@ -58,6 +54,9 @@ def Main():
     parser = optparse.OptionParser()
     parser.add_option("-p", "--publishToRepo",
         help='Publish binaries to specified dist repo.',
+        default=None)
+    parser.add_option("-f", "--file",
+        help='File to publish.',
         default=None)
     (options, args) = parser.parse_args()
     if options.publishToRepo == None:

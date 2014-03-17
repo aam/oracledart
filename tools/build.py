@@ -69,7 +69,7 @@ def Main():
             subprocess.call(["copy", extensionlibrary, "lib"], shell=True)
         if (options.publishToRepo != None):
             subprocess.call(
-                ["python", "./tools/deploy.py", "-p", options.publishToRepo])
+                ["python", "./tools/deploy.py", "-p", options.publishToRepo, "-f", extensionlibrary])
     return process.returncode
 
 if __name__ == '__main__':
