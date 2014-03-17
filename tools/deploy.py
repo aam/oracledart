@@ -16,7 +16,7 @@ def deploy(original_workingdirectory, tempdir, options):
 
     platformid = platform.system()
     if platformid == "Linux" or platformid == "Darwin":
-        subprocess.call("cp %s %s" % (options.filename, os.path.join(tempdir, "lib")), shell=True)
+        subprocess.call("cp %s %s" % (options.file, os.path.join(tempdir, "lib")), shell=True)
     elif platformid == "Windows" or platformid == "Microsoft":
         f = open("package_exclusion.txt", "w")
         f.write("packages\\\n")
