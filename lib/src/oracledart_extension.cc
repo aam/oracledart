@@ -86,28 +86,25 @@ struct OracleResultset {
   }
 };
 
-static void OracleConnectionFinalizer(Dart_Isolate isolate,
+static void OracleConnectionFinalizer(void* isolate_callback_data,
                                       Dart_WeakPersistentHandle handle,
                                       void* pvoid_oracle_connection) {
-  Dart_DeleteWeakPersistentHandle(isolate, handle);
   OracleConnection* oracle_connection =
       static_cast<OracleConnection*>(pvoid_oracle_connection);
   oracle_connection->Terminate();
 }
 
-static void OracleStatementFinalizer(Dart_Isolate isolate,
+static void OracleStatementFinalizer(void* isolate_callback_data,
                                      Dart_WeakPersistentHandle handle,
                                      void* pvoid_oracle_statement) {
-  Dart_DeleteWeakPersistentHandle(isolate, handle);
   OracleStatement* oracle_statement =
      static_cast<OracleStatement*>(pvoid_oracle_statement);
   oracle_statement->Close();
 }
 
-static void OracleResultsetFinalizer(Dart_Isolate isolate,
+static void OracleResultsetFinalizer(void* isolate_callback_data,
                                      Dart_WeakPersistentHandle handle,
                                      void* pvoid_oracle_resultset) {
-  Dart_DeleteWeakPersistentHandle(isolate, handle);
   OracleResultset* oracle_resultset =
       static_cast<OracleResultset*>(pvoid_oracle_resultset);
   oracle_resultset->Close();
