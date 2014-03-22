@@ -55,7 +55,26 @@ class _OracleStatement extends NativeFieldWrapperClass1
   void setString(int ndx, String value) native "OracleStatement_SetString";
 }
 
-abstract class OracleResultset {
+class OracleValue {
+  OracleResultset resultset;
+
+  OracleValue._fromResultset(this.resultset);
+
+  getInt(int index) => resultset.getInt(index);
+  String getString(int index) => resultset.getString(index);
+  getDouble(int index) => resultset.getDouble(index);
+  getFloat(int index) => resultset.getFloat(index);
+}
+
+class OracleIterator implements Iterator<OracleValue> {
+  OracleResultset resultset;
+  OracleIterator._fromResultset(this.resultset);
+
+  bool moveNext() => resultset.next();
+  get current => new OracleValue._fromResultset(resultset);
+}
+
+abstract class OracleResultset extends Object with IterableMixin<OracleValue> {
   int getInt(int index);
   String getString(int index);
   double getDouble(int index);
@@ -65,6 +84,8 @@ abstract class OracleResultset {
 
 class _OracleResultset extends NativeFieldWrapperClass1
                        implements OracleResultset {
+  OracleIterator get iterator => new OracleIterator._fromResultset(this);
+
   OracleStatement statement;
   _OracleResultset(this.statement);
 

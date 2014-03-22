@@ -87,5 +87,28 @@ void main() {
       expect(counter, equals(0));
       expect(resultset.next(), equals(false));
     });
+
+    test('Test setInt', () {
+      var expected = [
+          'CLARK',
+          'SCOTT',
+          'KING',
+          'TURNER',
+          'ADAMS',
+          'JAMES',
+          'FORD',
+          'MILLER'];
+      OracleStatement stmt =
+          connection.createStatement("select ename from emp where empno > :1");
+      stmt.setInt(1, 7700);
+      OracleResultset resultset = stmt.executeQuery();
+      var counter = 0;
+      for (OracleValue value in resultset) {
+        expect(value.getString(1), equals(expected[counter]));
+        counter++;
+      }
+      expect(counter, equals(expected.length));
+    });
+
   }
 }

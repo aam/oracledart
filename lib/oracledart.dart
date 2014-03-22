@@ -7,6 +7,7 @@ library oracledart;
 import 'dart:async';
 import 'dart-ext:oracledart_extension';
 import 'dart:nativewrappers';
+import 'dart:collection';
 
 part 'oracledart_synchronous_extension.dart';
 
