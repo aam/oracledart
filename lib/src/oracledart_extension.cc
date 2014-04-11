@@ -19,7 +19,7 @@ Dart_NativeFunction ResolveName(Dart_Handle name,
 DART_EXPORT Dart_Handle oracledart_extension_Init(Dart_Handle parent_library) {
   if (Dart_IsError(parent_library)) { return parent_library; }
 
-  Dart_Handle result_code = Dart_SetNativeResolver(parent_library, ResolveName);
+  Dart_Handle result_code = Dart_SetNativeResolver(parent_library, ResolveName, NULL);
   if (Dart_IsError(result_code)) return result_code;
 
   return Dart_Null();
