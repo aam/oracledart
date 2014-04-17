@@ -65,6 +65,8 @@ export LD_LIBRARY_PATH=~/Downloads/instantclient_11_2
 export DYLD_LIBRARY_PATH=~/Downloads/instantclient_11_2-2
 ```
 
+3. On Windows Oracle Instant Client requires some form of Microsoft VC++ runtime present on the machine. Simplest would be to install VC redistributable package x86 from http://www.microsoft.com/en-us/download/details.aspx?id=30679.
+
 Source code
 ---
 
