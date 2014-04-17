@@ -49,21 +49,21 @@ To Use
 
 2. This extension requires Oracle Instant Client being present on the machine.
    It is being tested with version instantclient-basic-nt-12.1.0.1.0 on Windows, instantclient_11_2 on Linux and Mac.
-
+   
    You need to have OCCI binaries in the path for extension to work.
 
    Here is how sample path setting might look like on Windows:
-```shell
-set path=%userprofile%\downloads\instantclient-basic-nt-12.1.0.1.0\instantclient_12_1\vc11;%userprofile%\downloads\instantclient-basic-nt-12.1.0.1.0\instantclient_12_1;%path%
-```
+ ```shell
+ set path=%userprofile%\downloads\instantclient-basic-nt-12.1.0.1.0\instantclient_12_1\vc11;%userprofile%\downloads\instantclient-basic-nt-12.1.0.1.0\instantclient_12_1;%path%
+ ```
    on Linux
-```shell
-export LD_LIBRARY_PATH=~/Downloads/instantclient_11_2
-```
+ ```shell
+ export LD_LIBRARY_PATH=~/Downloads/instantclient_11_2
+ ```
    or on Mac
-```shell
-export DYLD_LIBRARY_PATH=~/Downloads/instantclient_11_2-2
-```
+ ```shell
+ export DYLD_LIBRARY_PATH=~/Downloads/instantclient_11_2-2
+ ```
 
 3. On Windows Oracle Instant Client requires some form of Microsoft VC++ runtime present on the machine. Simplest would be to install VC redistributable package x86 from http://www.microsoft.com/en-us/download/details.aspx?id=30679.
 
