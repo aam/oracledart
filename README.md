@@ -58,8 +58,7 @@ To Use
  ```
    on Windows 64-bit
  ```shell
- set path=%userprofile%\Downloads\instantclient-basic-windows.x64-12.1.0.1.0\instan
-tclient_12_1\vc11;%userprofile%\Downloads\instantclient-basic-windows.x64-12.1.0.1.0\instantclient_12_1;%path%
+ set path=%userprofile%\Downloads\instantclient-basic-windows.x64-12.1.0.1.0\instantclient_12_1\vc11;%userprofile%\Downloads\instantclient-basic-windows.x64-12.1.0.1.0\instantclient_12_1;%path%
  ```
    on Linux
  ```shell
