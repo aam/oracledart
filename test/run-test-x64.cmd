@@ -6,6 +6,8 @@ copy packages\oracledart\oracledart_extension_x64.dll packages\oracledart\oracle
 
 ..\build\ReleaseX64\dart oracledart_test.dart
 
+del packages\oracledart\oracledart_extension.dll
+
 copy packages\oracledart\oracledart_extension_ia32.dll packages\oracledart\oracledart_extension.dll
 
 del packages\oracledart\oracledart_extension_ia32.dll
