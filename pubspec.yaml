@@ -1,5 +1,5 @@
 name: oracledart
-version: 0.0.4
+version: 0.0.5
 author: Alexander Aprelev <alexander@aprelev.com>
 homepage: https://github.com/aam/oracledart
 description: Library to allow Dart server programs to talk to Oracle
