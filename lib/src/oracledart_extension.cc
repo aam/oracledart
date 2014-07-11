@@ -407,6 +407,28 @@ void OracleMetadataVector_GetSize(Dart_NativeArguments arguments) {
   Dart_ExitScope();
 }
 
+void OracleMetadataVector_GetColumnName(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+
+  Dart_Handle metadata_vector_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  OracleMetadataVector* metadata_vector;
+  HandleError(Dart_GetNativeInstanceField(
+    metadata_vector_obj,
+    0,
+    reinterpret_cast<intptr_t*>(&metadata_vector)));
+
+  Dart_Handle index_obj = HandleError(Dart_GetNativeArgument(arguments, 1));
+  int64_t index;
+  HandleError(Dart_IntegerToInt64(index_obj, &index));
+
+  Dart_Handle result = HandleError(Dart_NewStringFromCString(
+      std::string(metadata_vector->v_metadata.at(index).getString(oracle::occi::MetaData::ATTR_NAME)).c_str()));
+
+  Dart_SetReturnValue(arguments, result);
+  Dart_ExitScope();
+}
+
+
 struct FunctionLookup {
   const char* name;
   Dart_NativeFunction function;
@@ -425,6 +447,7 @@ FunctionLookup function_list[] = {
     {"OracleResultset_Next", OracleResultset_Next},
     {"OracleResultset_GetMetadataVector", OracleResultset_GetMetadataVector},
     {"OracleMetadataVector_GetSize", OracleMetadataVector_GetSize},
+    {"OracleMetadataVector_GetColumnName", OracleMetadataVector_GetColumnName},
 
     {NULL, NULL}};
 

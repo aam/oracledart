@@ -108,9 +108,11 @@ class _OracleResultset extends NativeFieldWrapperClass1
 
 abstract class OracleMetadataVector {
   int getSize();
+  String getColumnName(int index);
 }
 
 class _OracleMetadataVector extends NativeFieldWrapperClass1
                             implements OracleMetadataVector {
   int getSize() native "OracleMetadataVector_GetSize";
+  String getColumnName(int index) native "OracleMetadataVector_GetColumnName";
 }
