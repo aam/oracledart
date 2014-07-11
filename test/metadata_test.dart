@@ -37,4 +37,18 @@ void main() {
     expect(metadata.getColumnName(6), equals("COMM"));
     expect(metadata.getColumnName(7), equals("DEPTNO"));
   });
+
+  test('Test getMetadataVector iterating through columns', () {
+    OracleResultset resultset =
+        connection.select("select * from emp order by empno");
+    OracleMetadataVector metadata = resultset.getMetadataVector();
+    var columns = {};
+    for (int i = 0; i < metadata.getSize(); i++) {
+      columns[metadata.getColumnName(i)] = i + 1;
+    }
+    resultset.next();
+    expect(resultset.getString(columns["ENAME"]), "SMITH");
+    expect(resultset.getString(columns["JOB"]), "CLERK");
+  });
+
 }
