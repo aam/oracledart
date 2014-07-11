@@ -17,6 +17,6 @@ void main() {
         connection.select("select empno, ename from emp");
     OracleMetadataVector metadata =
         resultset.getMetadataVector();
-    expect(metadata.getSize(), equals(3));
+    expect(metadata.getSize(), equals(2));
   });
 }
