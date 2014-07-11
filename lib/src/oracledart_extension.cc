@@ -89,9 +89,7 @@ struct OracleResultset {
 struct OracleMetadataVector {
   std::vector<oracle::occi::MetaData> v_metadata;
 
-  OracleMetadataVector(std::vector<oracle::occi::MetaData> &_v_metadata) {
-      v_metadata = _v_metadata;
-  }
+  OracleMetadataVector(std::vector<oracle::occi::MetaData> _v_metadata):v_metadata(_v_metadata) {}
 };
 
 static void OracleConnectionFinalizer(void* isolate_callback_data,
@@ -378,7 +376,10 @@ void OracleResultset_GetMetadataVector(Dart_NativeArguments arguments) {
     metadata_vector = new OracleMetadataVector(
         resultset->resultset->getColumnListMetaData());
   } catch(oracle::occi::SQLException exception) {
-    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+    Dart_PropagateError(
+        Dart_NewUnhandledExceptionError(
+            Dart_NewStringFromCString(
+                exception.getMessage().c_str())));
   }
 
   HandleError(Dart_SetNativeInstanceField(
