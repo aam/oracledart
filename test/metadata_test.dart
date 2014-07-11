@@ -51,4 +51,17 @@ void main() {
     expect(resultset.getString(columns["JOB"]), "CLERK");
   });
 
+  test('Test getStringByName, getIntByName', () {
+    OracleResultset resultset =
+        connection.select("select empno, ename from emp where EMPNO='7369'");
+    resultset.next();
+    expect(resultset.getString(1), equals("7369"));
+    expect(resultset.getStringByName("EMPNO"), equals("7369"));
+    expect(resultset.getInt(1), equals(7369));
+    expect(resultset.getIntByName("EMPNO"), equals(7369));
+    expect(resultset.getString(2), equals("SMITH"));
+    expect(resultset.getStringByName("ENAME"), equals("SMITH"));
+  });
+
+  
 }

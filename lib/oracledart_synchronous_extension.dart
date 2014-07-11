@@ -82,6 +82,11 @@ abstract class OracleResultset extends Object with IterableMixin<OracleValue> {
   bool next();
   
   OracleMetadataVector getColumnListMetadata();
+  
+  int getIntByName(String columnName);
+  String getStringByName(String columnName);
+  double getFloatByName(String columnName);
+  double getDoubleByName(String columnName);
 }
 
 class _OracleResultset extends NativeFieldWrapperClass1
@@ -99,10 +104,38 @@ class _OracleResultset extends NativeFieldWrapperClass1
   
   void _getMetadataVector(OracleMetadataVector metadataVector)
       native "OracleResultset_GetMetadataVector";
+  
+  _OracleMetadataVector metadataVector;
   OracleMetadataVector getMetadataVector() {
-    var metaDataVector = new _OracleMetadataVector();
-    _getMetadataVector(metaDataVector);
-    return metaDataVector;
+    if (metadataVector == null) {
+      metadataVector = new _OracleMetadataVector();
+      _getMetadataVector(metadataVector);
+    }
+    return metadataVector;
+  }
+
+  Map<String, int> columnsByName;
+  Map<String, int> getColumnsByName() {
+    if (columnsByName == null) {
+      columnsByName = {};
+      OracleMetadataVector metadata = getMetadataVector();
+      for (int i = 0; i < metadata.getSize(); i++) {
+        columnsByName[metadata.getColumnName(i)] = i + 1;
+      }
+    }
+    return columnsByName;
+  }
+  int getIntByName(String columnName) {
+    return getInt(getColumnsByName()[columnName]);
+  }
+  String getStringByName(String columnName) {
+    return getString(getColumnsByName()[columnName]);
+  }
+  double getFloatByName(String columnName) {
+    return getFloat(getColumnsByName()[columnName]);
+  }
+  double getDoubleByName(String columnName) {
+    return getDouble(getColumnsByName()[columnName]);
   }
 }
 
