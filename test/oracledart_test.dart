@@ -5,12 +5,14 @@ import 'package:unittest/vm_config.dart';
 
 import 'package:oracledart/oracledart.dart';
 import 'oracledart_sync_extension_test.dart' as sync_test;
+import 'metadata_test.dart' as metadata_test;
 
 void main() {
   useVMConfiguration();
 
   sync_test.main();
-  
+  metadata_test.main();
+
   test('Can connect', () {
     connect(
       "scott",
