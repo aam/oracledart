@@ -86,6 +86,14 @@ struct OracleResultset {
   }
 };
 
+struct OracleMetadataVector {
+  std::vector<oracle::occi::MetaData> v_metadata;
+
+  OracleMetadataVector(std::vector<oracle::occi::MetaData> &_v_metadata) {
+      v_metadata = _v_metadata;
+  }
+};
+
 static void OracleConnectionFinalizer(void* isolate_callback_data,
                                       Dart_WeakPersistentHandle handle,
                                       void* pvoid_oracle_connection) {
@@ -353,6 +361,51 @@ void OracleResultset_GetFloat(Dart_NativeArguments arguments) {
   return OracleResultset_Get(arguments, oracle::occi::OCCIFLOAT);
 }
 
+void OracleResultset_GetMetadataVector(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+
+  Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  OracleResultset* resultset;
+  HandleError(Dart_GetNativeInstanceField(
+    resultset_obj,
+    0,
+    reinterpret_cast<intptr_t*>(&resultset)));
+
+  Dart_Handle metadata_vector_obj = HandleError(Dart_GetNativeArgument(arguments, 1));
+
+  OracleMetadataVector* metadata_vector = NULL;
+  try {
+    metadata_vector = new OracleMetadataVector(
+        resultset->resultset->getColumnListMetaData());
+  } catch(oracle::occi::SQLException exception) {
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+  }
+
+  HandleError(Dart_SetNativeInstanceField(
+      metadata_vector_obj,
+      0,
+      reinterpret_cast<intptr_t>(metadata_vector)));
+
+  Dart_ExitScope();
+}
+
+void OracleMetadataVector_GetSize(Dart_NativeArguments arguments) {
+  Dart_EnterScope();
+
+  Dart_Handle metadata_vector_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  OracleMetadataVector* metadata_vector;
+  HandleError(Dart_GetNativeInstanceField(
+    metadata_vector_obj,
+    0,
+    reinterpret_cast<intptr_t*>(&metadata_vector)));
+
+  Dart_Handle result = NULL;
+  result = HandleError(Dart_NewInteger(metadata_vector->v_metadata.size()));
+
+  Dart_SetReturnValue(arguments, result);
+  Dart_ExitScope();
+}
+
 struct FunctionLookup {
   const char* name;
   Dart_NativeFunction function;
@@ -369,6 +422,8 @@ FunctionLookup function_list[] = {
     {"OracleResultset_GetDouble", OracleResultset_GetDouble},
     {"OracleResultset_GetFloat", OracleResultset_GetFloat},
     {"OracleResultset_Next", OracleResultset_Next},
+    {"OracleResultset_GetMetadataVector", OracleResultset_GetMetadataVector},
+    {"OracleMetadataVector_GetSize", OracleMetadataVector_GetSize},
 
     {NULL, NULL}};
 

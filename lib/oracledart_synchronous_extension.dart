@@ -80,6 +80,8 @@ abstract class OracleResultset extends Object with IterableMixin<OracleValue> {
   double getDouble(int index);
   double getFloat(int index);
   bool next();
+  
+  OracleMetadataVector getColumnListMetadata();
 }
 
 class _OracleResultset extends NativeFieldWrapperClass1
@@ -94,4 +96,21 @@ class _OracleResultset extends NativeFieldWrapperClass1
   double getFloat(int index) native "OracleResultset_GetFloat";
   double getDouble(int index) native "OracleResultset_GetDouble";
   bool next() native "OracleResultset_Next";
+  
+  void _getMetadataVector(OracleMetadataVector metadataVector)
+      native "OracleResultset_GetMetadataVector";
+  OracleMetadataVector getMetadataVector() {
+    var metaDataVector = new _OracleMetadataVector();
+    _getMetadataVector(metaDataVector);
+    return metaDataVector;
+  }
+}
+
+abstract class OracleMetadataVector {
+  int getSize();
+}
+
+class _OracleMetadataVector extends NativeFieldWrapperClass1
+                            implements OracleMetadataVector {
+  int getSize() native "OracleMetadataVector_GetSize";
 }
