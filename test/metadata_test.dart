@@ -1,27 +1,19 @@
-import 'dart:io';
-
 import 'package:unittest/unittest.dart';
 import 'package:unittest/vm_config.dart';
 
 import 'package:oracledart/oracledart.dart';
 
+import 'oracle_setup.dart';
+
 void main() {
-  var env = Platform.environment;
-  var oracle_host = env['ORACLE_HOST'];
-  if (oracle_host == null) {
-    oracle_host = "w8-32-12core";
-  }
-  var oracle_port = env['ORACLE_PORT'];
-  if (oracle_port == null) {
-    oracle_host = 1521;
-  }
+  var oracle = new OracleSetup.Establish();
 
   useVMConfiguration();
   OracleConnection connection = new OracleConnection.connect(
     "scott",
     "tiger",
     "(DESCRIPTION="
-      "(ADDRESS=(PROTOCOL=TCP)(HOST=${oracle_host})(PORT=${oracle_port}))"
+      "(ADDRESS=(PROTOCOL=TCP)(HOST=${oracle.host})(PORT=${oracle.port}))"
       "(CONNECT_DATA=(SERVICE_NAME=XE)(SERVER=DEDICATED)))");
 
   test('Test getMetadataVector', () {
