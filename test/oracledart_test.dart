@@ -1,5 +1,7 @@
 library oracledart_test;
 
+import 'dart:io';
+
 import 'package:unittest/unittest.dart';
 import 'package:unittest/vm_config.dart';
 
@@ -13,12 +15,22 @@ void main() {
   sync_test.main();
   metadata_test.main();
 
+  var env = Platform.environment;
+  var oracle_host = env['ORACLE_HOST'];
+  if (oracle_host == null) {
+    oracle_host = "w8-32-12core";
+  }
+  var oracle_port = env['ORACLE_PORT'];
+  if (oracle_port == null)
+    oracle_host = 1521;
+  }
+
   test('Can connect', () {
     connect(
       "scott",
       "tiger",
       "(DESCRIPTION="
-        "(ADDRESS=(PROTOCOL=TCP)(HOST=w8-32-12core)(PORT=1521))"
+        "(ADDRESS=(PROTOCOL=TCP)(HOST=${oracle_host})(PORT=${oracle_port}))"
         "(CONNECT_DATA=(SERVICE_NAME=XE)(SERVER=DEDICATED)))")
     .then(
         expectAsync((oracleConnection) {
@@ -51,7 +63,7 @@ void main() {
       "scott",
       "tiger",
       "(DESCRIPTION="
-        "(ADDRESS=(PROTOCOL=TCP)(HOST=w8-32-12core)(PORT=1521))"
+        "(ADDRESS=(PROTOCOL=TCP)(HOST=${oracle_host})(PORT=${oracle_port}))"
         "(CONNECT_DATA=(SERVICE_NAME=XE)(SERVER=DEDICATED)))")
     .then(
         expectAsync((oracleConnection) {
