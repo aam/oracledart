@@ -21,7 +21,7 @@ void main() {
     oracle_host = "w8-32-12core";
   }
   var oracle_port = env['ORACLE_PORT'];
-  if (oracle_port == null)
+  if (oracle_port == null) {
     oracle_host = 1521;
   }
 
