@@ -24,8 +24,6 @@ def deploy(original_workingdirectory, tempdir, options):
         f = open("package_exclusion.txt", "w")
         f.write("packages\\\n")
         f.write("packages/\n")
-        f.write("lib\\src\\\n")
-        f.write("lib/src/\n")
         f.close()
         subprocess.call("xcopy %s %s /s/i/y /exclude:package_exclusion.txt" %
                 (os.path.join(original_workingdirectory, "lib"),
