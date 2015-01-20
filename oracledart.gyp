@@ -8,15 +8,15 @@
   ],
   'targets': [
     {
-      'target_name': 'oracledart_extension',
+      'target_name': 'oracledart_native_extension',
       'type': 'shared_library',
       'include_dirs': [
         '$(ORACLE_OCI_HOME)/include',
         '../dart/runtime'
       ],
       'sources': [
-        'lib/src/oracledart_extension.cc',
-        'lib/src/oracledart_extension_dllmain_win.cc',
+        'lib/src/oracledart_native_extension.cc',
+        'lib/src/oracledart_native_extension_dllmain_win.cc',
       ],
       'defines': [
         'DART_SHARED_LIB',

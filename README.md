@@ -69,7 +69,7 @@ To Use
  export DYLD_LIBRARY_PATH=~/Downloads/instantclient_11_2-2
  ```
 
-3.  Windows extension comes in 32-bit and 64-bit flavor, with 32-bit being selected by default. If you want to use 64-bit, then once you do 'pub get', you need to go to your project's packages\oracledart folder and rename oracledart_extension.dll to oracledart_extension_ia32.dll(for backup purposes), and rename oracledart_extension_x64.dll to oracledart_extension.dll.
+3.  Windows extension comes in 32-bit and 64-bit flavor, with 32-bit being selected by default. If you want to use 64-bit, then once you do 'pub get', you need to go to your project's packages\oracledart folder and rename oracledart_native_extension.dll to oracledart_native_extension_ia32.dll(for backup purposes), and rename oracledart_native_extension_x64.dll to oracledart_native_extension.dll.
 
 4. On Windows Oracle Instant Client requires some form of Microsoft VC++ runtime present on the machine. Simplest would be to install VC redistributable package x86 from http://www.microsoft.com/en-us/download/details.aspx?id=30679.
 

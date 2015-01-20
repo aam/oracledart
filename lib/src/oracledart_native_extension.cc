@@ -16,10 +16,12 @@ Dart_NativeFunction ResolveName(Dart_Handle name,
                                 int argc,
                                 bool* auto_setup_scope);
 
-DART_EXPORT Dart_Handle oracledart_extension_Init(Dart_Handle parent_library) {
+DART_EXPORT Dart_Handle oracledart_native_extension_Init(
+    Dart_Handle parent_library) {
   if (Dart_IsError(parent_library)) { return parent_library; }
 
-  Dart_Handle result_code = Dart_SetNativeResolver(parent_library, ResolveName, NULL);
+  Dart_Handle result_code = Dart_SetNativeResolver(parent_library,
+      ResolveName, NULL);
   if (Dart_IsError(result_code)) return result_code;
 
   return Dart_Null();
@@ -35,7 +37,8 @@ struct OracleConnection {
   oracle::occi::Connection *conn;
 
   OracleConnection(std::string user, std::string password, std::string db) {
-    env = oracle::occi::Environment::createEnvironment(oracle::occi::Environment::DEFAULT);
+    env = oracle::occi::Environment::createEnvironment(
+        oracle::occi::Environment::DEFAULT);
     conn = env->createConnection(user, password, db);
   }
 
@@ -89,7 +92,8 @@ struct OracleResultset {
 struct OracleMetadataVector {
   std::vector<oracle::occi::MetaData> v_metadata;
 
-  OracleMetadataVector(std::vector<oracle::occi::MetaData> _v_metadata):v_metadata(_v_metadata) {}
+  OracleMetadataVector(std::vector<oracle::occi::MetaData> _v_metadata):
+      v_metadata(_v_metadata) {}
 };
 
 static void OracleConnectionFinalizer(void* isolate_callback_data,
@@ -121,10 +125,12 @@ void OracleConnection_Connect(Dart_NativeArguments arguments) {
 
   Dart_Handle connection_obj = Dart_GetNativeArgument(arguments, 0);
 
-  Dart_Handle username_object = HandleError(Dart_GetNativeArgument(arguments, 1));
+  Dart_Handle username_object = HandleError(
+      Dart_GetNativeArgument(arguments, 1));
   const char* username;
   HandleError(Dart_StringToCString(username_object, &username));
-  Dart_Handle password_object = HandleError(Dart_GetNativeArgument(arguments, 2));
+  Dart_Handle password_object = HandleError(
+      Dart_GetNativeArgument(arguments, 2));
   const char* password;
   HandleError(Dart_StringToCString(password_object, &password));
   Dart_Handle db_object = HandleError(Dart_GetNativeArgument(arguments, 3));
@@ -135,7 +141,8 @@ void OracleConnection_Connect(Dart_NativeArguments arguments) {
   try {
    connection = new OracleConnection(username, password, db);
   } catch(oracle::occi::SQLException exception) {
-    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(
+        Dart_NewStringFromCString(exception.getMessage().c_str())));
   }
 
   HandleError(Dart_SetNativeInstanceField(
@@ -155,7 +162,8 @@ void OracleConnection_Connect(Dart_NativeArguments arguments) {
 void OracleConnection_CreateStatement(Dart_NativeArguments arguments) {
   Dart_EnterScope();
 
-  Dart_Handle connection_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  Dart_Handle connection_obj = HandleError(
+      Dart_GetNativeArgument(arguments, 0));
   OracleConnection* connection;
   HandleError(Dart_GetNativeInstanceField(
       connection_obj,
@@ -173,7 +181,8 @@ void OracleConnection_CreateStatement(Dart_NativeArguments arguments) {
     oracle::occi::Statement* stmt = connection->conn->createStatement(query);
     oracleStatement = new OracleStatement(connection, stmt);
   } catch(oracle::occi::SQLException exception) {
-    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(
+        Dart_NewStringFromCString(exception.getMessage().c_str())));
   }
 
   HandleError(Dart_SetNativeInstanceField(
@@ -205,7 +214,8 @@ void OracleStatement_Execute(Dart_NativeArguments arguments) {
   try {
     rset = oracleStatement->statement->executeQuery();
   } catch(oracle::occi::SQLException exception) {
-    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(
+        Dart_NewStringFromCString(exception.getMessage().c_str())));
   }
 
   OracleResultset* resultset = new OracleResultset(oracleStatement, rset);
@@ -244,7 +254,8 @@ void OracleStatement_SetInt(Dart_NativeArguments arguments) {
   try {
     oracleStatement->statement->setInt(index, value);
   } catch(oracle::occi::SQLException exception) {
-    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(
+        Dart_NewStringFromCString(exception.getMessage().c_str())));
   }
 
   Dart_ExitScope();
@@ -271,7 +282,8 @@ void OracleStatement_SetString(Dart_NativeArguments arguments) {
   try {
     oracleStatement->statement->setString(index, value);
   } catch(oracle::occi::SQLException exception) {
-    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(
+        Dart_NewStringFromCString(exception.getMessage().c_str())));
   }
 
   Dart_ExitScope();
@@ -288,16 +300,19 @@ void OracleResultset_Next(Dart_NativeArguments arguments) {
     reinterpret_cast<intptr_t*>(&resultset)));
 
   try {
-    Dart_Handle result = HandleError(Dart_NewBoolean(resultset->resultset->next()));
+    Dart_Handle result = HandleError(
+        Dart_NewBoolean(resultset->resultset->next()));
     Dart_SetReturnValue(arguments, result);
   } catch(oracle::occi::SQLException exception) {
-    Dart_PropagateError(Dart_NewUnhandledExceptionError(Dart_NewStringFromCString(exception.getMessage().c_str())));
+    Dart_PropagateError(Dart_NewUnhandledExceptionError(
+        Dart_NewStringFromCString(exception.getMessage().c_str())));
   }
 
   Dart_ExitScope();
 }
 
-void OracleResultset_Get(Dart_NativeArguments arguments, oracle::occi::Type type) {
+void OracleResultset_Get(Dart_NativeArguments arguments,
+                         oracle::occi::Type type) {
   Dart_EnterScope();
 
   Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
@@ -315,7 +330,8 @@ void OracleResultset_Get(Dart_NativeArguments arguments, oracle::occi::Type type
   try {
     switch(type) {
       case oracle::occi::OCCIINT:
-        result = HandleError(Dart_NewInteger(resultset->resultset->getInt(index)));
+        result = HandleError(Dart_NewInteger(
+            resultset->resultset->getInt(index)));
         break;
       case oracle::occi::OCCISTRING:
       {
@@ -330,7 +346,8 @@ void OracleResultset_Get(Dart_NativeArguments arguments, oracle::occi::Type type
         result = Dart_NewDouble(resultset->resultset->getFloat(index));
         break;
       default:
-        Dart_PropagateError(Dart_NewApiError("Requested type is not supported by OracleDart."));
+        Dart_PropagateError(Dart_NewApiError(
+            "Requested type is not supported by OracleDart."));
         break;
     }
   } catch(oracle::occi::SQLException exception) {
@@ -365,11 +382,12 @@ void OracleResultset_GetMetadataVector(Dart_NativeArguments arguments) {
   Dart_Handle resultset_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
   OracleResultset* resultset;
   HandleError(Dart_GetNativeInstanceField(
-    resultset_obj,
-    0,
-    reinterpret_cast<intptr_t*>(&resultset)));
+      resultset_obj,
+      0,
+      reinterpret_cast<intptr_t*>(&resultset)));
 
-  Dart_Handle metadata_vector_obj = HandleError(Dart_GetNativeArgument(arguments, 1));
+  Dart_Handle metadata_vector_obj = HandleError(
+      Dart_GetNativeArgument(arguments, 1));
 
   OracleMetadataVector* metadata_vector = NULL;
   try {
@@ -393,12 +411,13 @@ void OracleResultset_GetMetadataVector(Dart_NativeArguments arguments) {
 void OracleMetadataVector_GetSize(Dart_NativeArguments arguments) {
   Dart_EnterScope();
 
-  Dart_Handle metadata_vector_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  Dart_Handle metadata_vector_obj = HandleError(
+      Dart_GetNativeArgument(arguments, 0));
   OracleMetadataVector* metadata_vector;
   HandleError(Dart_GetNativeInstanceField(
-    metadata_vector_obj,
-    0,
-    reinterpret_cast<intptr_t*>(&metadata_vector)));
+      metadata_vector_obj,
+      0,
+      reinterpret_cast<intptr_t*>(&metadata_vector)));
 
   Dart_Handle result = NULL;
   result = HandleError(Dart_NewInteger(metadata_vector->v_metadata.size()));
@@ -410,7 +429,8 @@ void OracleMetadataVector_GetSize(Dart_NativeArguments arguments) {
 void OracleMetadataVector_GetColumnName(Dart_NativeArguments arguments) {
   Dart_EnterScope();
 
-  Dart_Handle metadata_vector_obj = HandleError(Dart_GetNativeArgument(arguments, 0));
+  Dart_Handle metadata_vector_obj = HandleError(
+      Dart_GetNativeArgument(arguments, 0));
   OracleMetadataVector* metadata_vector;
   HandleError(Dart_GetNativeInstanceField(
     metadata_vector_obj,
@@ -422,7 +442,8 @@ void OracleMetadataVector_GetColumnName(Dart_NativeArguments arguments) {
   HandleError(Dart_IntegerToInt64(index_obj, &index));
 
   Dart_Handle result = HandleError(Dart_NewStringFromCString(
-      std::string(metadata_vector->v_metadata.at(index).getString(oracle::occi::MetaData::ATTR_NAME)).c_str()));
+      std::string(metadata_vector->v_metadata.at(index).getString(
+          oracle::occi::MetaData::ATTR_NAME)).c_str()));
 
   Dart_SetReturnValue(arguments, result);
   Dart_ExitScope();

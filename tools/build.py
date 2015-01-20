@@ -31,17 +31,17 @@ def Main():
             "%s/Downloads/instantclient_11_2" % userhome)
         buildCommand = ['make', '-j', '8', 'BUILDTYPE=ReleaseIA32']
         extensionlibrary = (
-            "out/ReleaseIA32/lib.target/liboracledart_extension.so")
+            "out/ReleaseIA32/lib.target/liboracledart_native_extension.so")
 
     elif platformid == "Darwin":
-        ORACLE_OCCI_LIB_HOME = "%s/Downloads/instantclient_11_2-2" % userhome
+        ORACLE_OCCI_LIB_HOME = "%s/Downloads/instantclient_11_2" % userhome
         subprocess.call(
             ["ln",
              "%s/libocci.dylib.11.1" % ORACLE_OCCI_LIB_HOME,
              "%s/libocci.dylib" % ORACLE_OCCI_LIB_HOME])
         subprocess.call(
             ["ln",
-             "%s/ORACLE_OCCI_LIB_HOME/libclntsh.dylib.11.1" %
+             "%s/libclntsh.dylib.11.1" %
                 ORACLE_OCCI_LIB_HOME,
              "%s/libclntsh.dylib" % ORACLE_OCCI_LIB_HOME])
         env["ORACLE_OCI_HOME"] = ("%s/Downloads/instantclient_11_2/sdk" %
@@ -52,7 +52,7 @@ def Main():
                         '-configuration', 'ReleaseIA32',
                         'SYMROOT=%s/../dart/xcodebuild' % os.getcwd()]
         extensionlibrary = (
-            "../dart/xcodebuild/ReleaseIA32/liboracledart_extension.dylib")
+            "../dart/xcodebuild/ReleaseIA32/liboracledart_native_extension.dylib")
 
     elif platformid == "Windows" or platformid == "Microsoft":
         if "JAVA_HOME" not in env:
@@ -82,11 +82,11 @@ def Main():
                         '/build',
                         buildConfiguration]
         extensionlibrary = (
-            "build\\%s\\oracledart_extension.dll" % (
+            "build\\%s\\oracledart_native_extension.dll" % (
                 "ReleaseX64" if options.architecture == 'x64'
                 else 'ReleaseIA32'))
         if options.architecture == 'x64':
-            targetExtensionLibrary = "oracledart_extension_x64.dll"
+            targetExtensionLibrary = "oracledart_native_extension_x64.dll"
     else:
         print("Unsupported platform")
         return 1
