@@ -101,12 +101,12 @@ def Main():
     if process.returncode == 0:
         if platformid == "Linux" or platformid == "Darwin":
             subprocess.call(
-                "cp %s lib/%s" % (extensionlibrary, targetExtensionLibrary),
+                "cp %s lib/src/%s" % (extensionlibrary, targetExtensionLibrary),
                 shell=True)
         else:
             subprocess.call(
                 ["copy", extensionlibrary,
-                 "lib\\%s" % (targetExtensionLibrary)],
+                 "lib\\src\\%s" % (targetExtensionLibrary)],
                 shell=True)
         if (options.publishToRepo is not None):
             subprocess.call(
