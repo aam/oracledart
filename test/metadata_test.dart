@@ -67,5 +67,11 @@ void main() {
     expect(resultset.getStringByName("ENAME"), equals("SMITH"));
   });
 
-  
+  test('Fail to getString with invalid column name', () {
+    OracleResultset resultset =
+        connection.select("select empno, ename from emp where EMPNO='7369'");
+    resultset.next();
+    expect(() => resultset.getStringByName("empno"),
+      throwsA((e) => e.toString() == 'Exception: Column "empno" not found'));
+  });
 }

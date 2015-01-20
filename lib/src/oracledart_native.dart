@@ -69,7 +69,7 @@ class _OracleResultset extends NativeFieldWrapperClass1
   }
 
   Map<String, int> columnsByName;
-  Map<String, int> getColumnsByName() {
+  int getColumnIndexByName(string columnName) {
     if (columnsByName == null) {
       columnsByName = {};
       OracleMetadataVector metadata = getMetadataVector();
@@ -77,19 +77,23 @@ class _OracleResultset extends NativeFieldWrapperClass1
         columnsByName[metadata.getColumnName(i)] = i + 1;
       }
     }
-    return columnsByName;
+    var index = columnsByName[columnName];
+    if (index == null) {
+      throw new Exception('Column "$columnName" not found');
+    }
+    return index;
   }
   int getIntByName(String columnName) {
-    return getInt(getColumnsByName()[columnName]);
+    return getInt(getColumnIndexByName(columnName));
   }
   String getStringByName(String columnName) {
-    return getString(getColumnsByName()[columnName]);
+    return getString(getColumnIndexByName(columnName));
   }
   double getFloatByName(String columnName) {
-    return getFloat(getColumnsByName()[columnName]);
+    return getFloat(getColumnIndexByName(columnName))
   }
   double getDoubleByName(String columnName) {
-    return getDouble(getColumnsByName()[columnName]);
+    return getDouble(getColumnIndexByName(columnName));
   }
 }
 
