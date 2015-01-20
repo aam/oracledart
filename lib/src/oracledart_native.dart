@@ -69,7 +69,7 @@ class _OracleResultset extends NativeFieldWrapperClass1
   }
 
   Map<String, int> columnsByName;
-  int getColumnIndexByName(string columnName) {
+  int getColumnIndexByName(String columnName) {
     if (columnsByName == null) {
       columnsByName = {};
       OracleMetadataVector metadata = getMetadataVector();
