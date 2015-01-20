@@ -45,7 +45,7 @@ class _OracleStatement extends NativeFieldWrapperClass1
 
 class _OracleResultset extends NativeFieldWrapperClass1
                        implements OracleResultset {
-  OracleIterator get iterator => new OracleIterator._fromResultset(this);
+  OracleIterator get iterator => new OracleIterator.fromResultset(this);
 
   OracleStatement statement;
   _OracleResultset(this.statement);

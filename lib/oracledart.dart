@@ -43,7 +43,7 @@ class OracleValue {
 
 class OracleIterator implements Iterator<OracleValue> {
   OracleResultset resultset;
-  OracleIterator._fromResultset(this.resultset);
+  OracleIterator.fromResultset(this.resultset);
 
   bool moveNext() => resultset.next();
   get current => new OracleValue._fromResultset(resultset);
