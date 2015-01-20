@@ -90,7 +90,7 @@ class _OracleResultset extends NativeFieldWrapperClass1
     return getString(getColumnIndexByName(columnName));
   }
   double getFloatByName(String columnName) {
-    return getFloat(getColumnIndexByName(columnName))
+    return getFloat(getColumnIndexByName(columnName));
   }
   double getDoubleByName(String columnName) {
     return getDouble(getColumnIndexByName(columnName));
