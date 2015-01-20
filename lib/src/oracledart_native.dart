@@ -55,10 +55,10 @@ class _OracleResultset extends NativeFieldWrapperClass1
   double getFloat(int index) native "OracleResultset_GetFloat";
   double getDouble(int index) native "OracleResultset_GetDouble";
   bool next() native "OracleResultset_Next";
-  
+
   void _getMetadataVector(OracleMetadataVector metadataVector)
       native "OracleResultset_GetMetadataVector";
-  
+
   _OracleMetadataVector metadataVector;
   OracleMetadataVector getMetadataVector() {
     if (metadataVector == null) {
@@ -69,7 +69,7 @@ class _OracleResultset extends NativeFieldWrapperClass1
   }
 
   Map<String, int> columnsByName;
-  int getColumnIndexByName(string columnName) {
+  int getColumnIndexByName(String columnName) {
     if (columnsByName == null) {
       columnsByName = {};
       OracleMetadataVector metadata = getMetadataVector();
