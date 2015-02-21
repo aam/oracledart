@@ -1,8 +1,8 @@
 #!/bin/bash
-copy packages/oracledart/src/liboracledart_native_extension.so packages/oracledart/src/liboracledart_native_extension_bk.so
-copy packages/oracledart/src/liboracledart_native_extension_12_1.so packages/oracledart/src/liboracledart_native_extension.so
+cp packages/oracledart/src/liboracledart_native_extension.so packages/oracledart/src/liboracledart_native_extension_bk.so
+cp packages/oracledart/src/liboracledart_native_extension_12_1.so packages/oracledart/src/liboracledart_native_extension.so
 LD_LIBRARY_PATH=~/Downloads/instantclient_12_1 ../../dart/out/ReleaseIA32/dart oracledart_test.dart
 rc=$?
-copy packages/oracledart/src/liboracledart_native_extension_bk.so packages/oracledart/src/liboracledart_native_extension.so
+cp packages/oracledart/src/liboracledart_native_extension_bk.so packages/oracledart/src/liboracledart_native_extension.so
 rm packages/oracledart/src/liboracledart_native_extension_bk.so
 exit $rc
