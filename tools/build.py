@@ -39,7 +39,7 @@ def Main():
         buildCommand = ['make', '-j', '8', 'BUILDTYPE=ReleaseIA32']
         extensionlibrary = (
             "out/ReleaseIA32/lib.target/liboracledart_native_extension.so")
-        targetExtensionlibrary = (
+        targetExtensionLibrary = (
             "liboracledart_native_extension%s.so" %
             ("" if options.suffix == "" else ("_%s" % options.suffix)))
 
