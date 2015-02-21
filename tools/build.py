@@ -122,7 +122,7 @@ def Main():
             subprocess.call(
                 ["python", "./tools/deploy.py",
                  "-p", options.publishToRepo,
-                 "-f", extensionlibrary])
+                 "-f", targetExtensionLibrary])
     return process.returncode
 
 if __name__ == '__main__':
