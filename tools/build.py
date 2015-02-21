@@ -14,8 +14,11 @@ def Main():
                       help='Publish binaries to specified dist repo.',
                       default=None)
     parser.add_option("-a", "--architecture",
-                      help='Publish binaries to specified dist repo.',
+                      help='Target architecture.',
                       default='ia32')
+    parser.add_option("-s", "--suffix",
+                      help='Suffix added to the built Ubuntu binary.',
+                      default='')
     (options, args) = parser.parse_args()
 
     userhome = os.path.expanduser("~")
@@ -35,7 +38,8 @@ def Main():
                 "%s/Downloads/instantclient_11_2" % userhome)
         buildCommand = ['make', '-j', '8', 'BUILDTYPE=ReleaseIA32']
         extensionlibrary = (
-            "out/ReleaseIA32/lib.target/liboracledart_native_extension.so")
+            "out/ReleaseIA32/lib.target/liboracledart_native_extension%s.so" %
+            "" if options.suffix != '' else ("_%s" % options.suffix))
 
     elif platformid == "Darwin":
         ORACLE_OCCI_LIB_HOME = "%s/Downloads/instantclient_11_2" % userhome
