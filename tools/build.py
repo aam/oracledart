@@ -25,10 +25,14 @@ def Main():
     targetExtensionLibrary = None
 
     if platformid == "Linux":
-        env["ORACLE_OCI_HOME"] = (
-            "%s/Downloads/instantclient_11_2/sdk" % userhome)
-        env["ORACLE_OCCI_LIB_HOME"] = (
-            "%s/Downloads/instantclient_11_2" % userhome)
+        if "ORACLE_OCI_HOME" not in env:
+            # Default to 11_2
+            env["ORACLE_OCI_HOME"] = (
+                "%s/Downloads/instantclient_11_2/sdk" % userhome)
+        if "ORACLE_OCCI_LIB_HOME" not in env:
+            # Default to 11_2
+            env["ORACLE_OCCI_LIB_HOME"] = (
+                "%s/Downloads/instantclient_11_2" % userhome)
         buildCommand = ['make', '-j', '8', 'BUILDTYPE=ReleaseIA32']
         extensionlibrary = (
             "out/ReleaseIA32/lib.target/liboracledart_native_extension.so")
