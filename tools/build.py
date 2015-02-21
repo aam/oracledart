@@ -39,7 +39,7 @@ def Main():
         buildCommand = ['make', '-j', '8', 'BUILDTYPE=ReleaseIA32']
         extensionlibrary = (
             "out/ReleaseIA32/lib.target/liboracledart_native_extension%s.so" %
-            "" if options.suffix == "" else ("_%s" % options.suffix))
+            ("" if options.suffix == "" else ("_%s" % options.suffix)))
 
     elif platformid == "Darwin":
         ORACLE_OCCI_LIB_HOME = "%s/Downloads/instantclient_11_2" % userhome
