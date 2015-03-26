@@ -25,15 +25,14 @@ int main(int argc, char* argv[]) {
         cout << "Created statement.\n";
         ResultSet *resultset = stmt->executeQuery();
         cout << "Got resultset.\n";
-        {
-        std::vector<MetaData> v_metadata = resultset->getColumnListMetaData();
+        std::vector<MetaData> v_metadata =
+            resultset->getColumnListMetaData();
         cout << "Get column list metadata vector.\n";
         cout << "Metadata vector size " << v_metadata.size() << "\n";
         for (int i=0; i < v_metadata.size(); i++) {
-            cout << "  "
+            cout << "  " << i << ": "
                  << std::string(v_metadata.at(i).getString(oracle::occi::MetaData::ATTR_NAME)).c_str()
                  << "\n";
-        }
         }
 
         cout << "End of metadata vector.\n";
@@ -43,8 +42,8 @@ int main(int argc, char* argv[]) {
         cout << "Terminated statement.\n";
         env->terminateConnection (conn);
         cout << "Terminated connection.\n";
-        Environment::terminateEnvironment (env);
-        cout << "Terminated environment.\n";
+        // Environment::terminateEnvironment (env);
+        // cout << "Terminated environment.\n";
     } catch(oracle::occi::SQLException exception) {
         cout << "Following exception caught. Test failed.\n" << exception.getMessage();
     }
