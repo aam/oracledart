@@ -6,6 +6,7 @@ library oracledart_native;
 
 import 'dart:nativewrappers';
 import 'dart-ext:oracledart_native_extension';
+import 'dart:typed_data';
 import 'package:oracledart/oracledart.dart';
 
 class OracleConnectionNative extends NativeFieldWrapperClass1

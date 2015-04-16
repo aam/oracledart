@@ -1,5 +1,7 @@
 library oracledart_sync_extension_test;
 
+import 'dart:typed_data';
+
 import 'package:unittest/unittest.dart';
 import 'package:unittest/vm_config.dart';
 
