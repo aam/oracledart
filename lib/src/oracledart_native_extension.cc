@@ -345,6 +345,30 @@ void OracleResultset_Get(Dart_NativeArguments arguments,
       case oracle::occi::OCCIFLOAT:
         result = Dart_NewDouble(resultset->resultset->getFloat(index));
         break;
+      case oracle::occi::OCCICLOB:
+      {
+        oracle::occi::Clob clob = resultset->resultset->getClob(index);
+        clob.open(oracle::occi::OCCI_LOB_READONLY);
+        int clobLength = clob.length();
+        const int startingAt = 1;
+        const int length = 0; // read until the end
+        oracle::occi::Stream *instream = clob.getStream(startingAt, length);
+        char *buffer = new char[clobLength];
+        memset(buffer, NULL, clobLength);
+        instream->readBuffer(buffer, clobLength);
+
+        Dart_Handle byte_array = HandleError(
+          Dart_NewTypedData(Dart_TypedData_kUint8, clobLength));
+        for (intptr_t i = 0; i < clobLength; ++i) {
+          HandleError(Dart_ListSetAt(byte_array, i, Dart_NewInteger(buffer[i])));
+        }
+        result = HandleError(Dart_NewByteBuffer(byte_array));
+
+        delete (buffer);
+        clob.closeStream(instream);
+        clob.close();
+        break;
+      }
       default:
         Dart_PropagateError(Dart_NewApiError(
             "Requested type is not supported by OracleDart."));
@@ -374,6 +398,10 @@ void OracleResultset_GetDouble(Dart_NativeArguments arguments) {
 
 void OracleResultset_GetFloat(Dart_NativeArguments arguments) {
   return OracleResultset_Get(arguments, oracle::occi::OCCIFLOAT);
+}
+
+void OracleResultset_GetClob(Dart_NativeArguments arguments) {
+	return OracleResultset_Get(arguments, oracle::occi::OCCICLOB);
 }
 
 void OracleResultset_GetMetadataVector(Dart_NativeArguments arguments) {
@@ -464,7 +492,8 @@ FunctionLookup function_list[] = {
     {"OracleResultset_GetString", OracleResultset_GetString},
     {"OracleResultset_GetInt", OracleResultset_GetInt},
     {"OracleResultset_GetDouble", OracleResultset_GetDouble},
-    {"OracleResultset_GetFloat", OracleResultset_GetFloat},
+    {"OracleResultset_GetFloat", OracleResultset_GetFloat },
+    {"OracleResultset_GetClob", OracleResultset_GetClob },
     {"OracleResultset_Next", OracleResultset_Next},
     {"OracleResultset_GetMetadataVector", OracleResultset_GetMetadataVector},
     {"OracleMetadataVector_GetSize", OracleMetadataVector_GetSize},

@@ -39,6 +39,7 @@ class OracleValue {
   String getString(int index) => resultset.getString(index);
   getDouble(int index) => resultset.getDouble(index);
   getFloat(int index) => resultset.getFloat(index);
+  getClob(int index) => resultset.getClob(index);
 }
 
 class OracleIterator implements Iterator<OracleValue> {
@@ -54,6 +55,7 @@ abstract class OracleResultset extends Object with IterableMixin<OracleValue> {
   String getString(int index);
   double getDouble(int index);
   double getFloat(int index);
+  ByteBuffer getClob(int index);
   bool next();
 
   OracleMetadataVector getMetadataVector();

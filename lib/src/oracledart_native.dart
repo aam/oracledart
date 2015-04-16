@@ -54,6 +54,7 @@ class _OracleResultset extends NativeFieldWrapperClass1
   String getString(int index) native "OracleResultset_GetString";
   double getFloat(int index) native "OracleResultset_GetFloat";
   double getDouble(int index) native "OracleResultset_GetDouble";
+  ByteBuffer getClob(int index) native "OracleResultset_GetClob";
   bool next() native "OracleResultset_Next";
 
   void _getMetadataVector(OracleMetadataVector metadataVector)

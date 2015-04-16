@@ -68,6 +68,25 @@ void main() {
       expect(resultset.next(), equals(false));
     });
 
+    test('Test getClob', () {
+      var expected = [
+        ['Vasya', 'Character info'],
+        ['Pupkin', 'Some more character info']
+      ];
+      var resultset = connection.select("select name, info from clobtest");
+      var counter = expected.length;
+      for (var pair in expected) {
+        expect(resultset.next(), equals(true));
+        expect(resultset.getString(1), equals(pair[0]));
+        Uint8List bytes = resultset.getClob(2).asUint8List();
+        String s = new String.fromCharCodes(bytes);
+        expect(s, equals(pair[1]));
+        counter--;
+      }
+      expect(counter, equals(0));
+      expect(resultset.next(), equals(false));
+    });
+
     test('Test setInt', () {
       var expected = [
           'CLARK',
