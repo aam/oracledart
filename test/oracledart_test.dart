@@ -1,18 +1,19 @@
+@TestOn("vm")
+
 library oracledart_test;
 
-import 'package:unittest/unittest.dart';
-import 'package:unittest/vm_config.dart';
+import 'package:test/test.dart';
 
 import 'package:oracledart/oracledart.dart';
+
 import 'oracledart_sync_extension_test.dart' as sync_test;
+
 import 'metadata_test.dart' as metadata_test;
 
 import 'oracle_setup.dart';
 
 void main() {
   var oracle = new OracleSetup.Establish();
-
-  useVMConfiguration();
 
   sync_test.main();
   metadata_test.main();

@@ -1,5 +1,6 @@
-import 'package:unittest/unittest.dart';
-import 'package:unittest/vm_config.dart';
+@TestOn("vm")
+
+import 'package:test/test.dart';
 
 import 'package:oracledart/oracledart.dart';
 
@@ -8,7 +9,6 @@ import 'oracle_setup.dart';
 void main() {
   var oracle = new OracleSetup.Establish();
 
-  useVMConfiguration();
   OracleConnection connection = new OracleConnection.connect(
     "scott",
     "tiger",

@@ -1,9 +1,10 @@
+@TestOn("vm")
+
 library oracledart_sync_extension_test;
 
 import 'dart:typed_data';
 
-import 'package:unittest/unittest.dart';
-import 'package:unittest/vm_config.dart';
+import 'package:test/test.dart';
 
 import 'package:oracledart/oracledart.dart';
 
@@ -12,7 +13,6 @@ import 'oracle_setup.dart';
 void main() {
   var oracle = new OracleSetup.Establish();
 
-  useVMConfiguration();
   for (var i = 0; i < 10; i++) {
     OracleConnection connection = new OracleConnection.connect(
       "scott",
