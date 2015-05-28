@@ -1,6 +1,6 @@
 solutions = [
-  { "name"        : "dart-all.deps",
-    "url"         : "https://dart.googlecode.com/svn/branches/bleeding_edge/deps/all.deps",
+  { "name"        : "sdk",
+    "url"         : "https://github.com/dart-lang/sdk.git",
     "deps_file"   : "DEPS",
     "managed"     : True,
     "custom_deps" : {

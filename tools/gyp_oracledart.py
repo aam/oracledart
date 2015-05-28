@@ -15,7 +15,7 @@ def execute(args):
   return process.returncode
 
 def replace_in_config_file(filename_suffix, replacements):
-  infile = open('dart/tools/gyp/configurations_%s.gypi' % filename_suffix)
+  infile = open('sdk/tools/gyp/configurations_%s.gypi' % filename_suffix)
   outfile = open('oracledart/tools/gyp/configurations_%s.gypi' % filename_suffix, 'w')
   for line in infile:
     for source, target in replacements.iteritems():
@@ -27,7 +27,7 @@ def replace_in_config_file(filename_suffix, replacements):
 
 def main():
   shutil.rmtree('oracledart/tools/gyp', ignore_errors=True)
-  shutil.copytree('dart/tools/gyp',
+  shutil.copytree('sdk/tools/gyp',
       'oracledart/tools/gyp',
       ignore=shutil.ignore_patterns('.svn'))
 
@@ -42,7 +42,7 @@ def main():
           "'GCC_ENABLE_CPP_RTTI': 'YES', # -frtti"})
 
   args = ['python', 
-          'dart/third_party/gyp/gyp_main.py',
+          'sdk/third_party/gyp/gyp_main.py',
           '--depth=oracledart',
           '-Ioracledart/tools/gyp/all.gypi',
           'oracledart/oracledart.gyp']

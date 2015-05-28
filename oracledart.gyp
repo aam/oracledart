@@ -4,7 +4,7 @@
 
 {
   'includes': [
-    '../dart/runtime/tools/gyp/runtime-configurations.gypi',
+    '../sdk/runtime/tools/gyp/runtime-configurations.gypi',
   ],
   'targets': [
     {
@@ -12,7 +12,7 @@
       'type': 'shared_library',
       'include_dirs': [
         '$(ORACLE_OCI_HOME)/include',
-        '../dart/runtime'
+        '../sdk/runtime'
       ],
       'sources': [
         'lib/src/oracledart_native_extension.cc',
@@ -24,8 +24,8 @@
       'conditions': [
         ['OS=="win"', {
           'dependencies': [
-            '../dart/runtime/dart-runtime.gyp:dart', # Windows build process needs dart.lib
-            '../dart/dart.gyp:create_sdk',
+            '../sdk/runtime/dart-runtime.gyp:dart', # Windows build process needs dart.lib
+            '../sdk/dart.gyp:create_sdk',
           ],
           'msvs_settings': {
             'VCLinkerTool': {
