@@ -60,15 +60,15 @@ def Main():
         buildCommand = ['xcodebuild',
                         '-project', 'oracledart.xcodeproj',
                         '-configuration', 'ReleaseIA32',
-                        'SYMROOT=%s/../dart/xcodebuild' % os.getcwd()]
+                        'SYMROOT=%s/../sdk/xcodebuild' % os.getcwd()]
         extensionlibrary = (
-            "../dart/xcodebuild/ReleaseIA32/liboracledart_native_extension.dylib")
+            "../sdk/xcodebuild/ReleaseIA32/liboracledart_native_extension.dylib")
 
     elif platformid == "Windows" or platformid == "Microsoft":
         if "JAVA_HOME" not in env:
             print("JAVA_HOME is not set up")
             return 3
-        os.system("mklink /J third_party ..\\dart\\third_party")
+        os.system("mklink /J third_party ..\\sdk\\third_party")
         buildConfiguration = ""
         if options.architecture == 'ia32':
             env["ORACLE_OCI_HOME"] = (
